@@ -60,6 +60,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
     //private DcMotor spinner = null;
+    //private DcMotor spinner = null;
 
 
     @Override
@@ -97,9 +98,12 @@ public class BasicOpMode_Auto extends LinearOpMode {
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
 
-        telemetry.addData("BackMotors", "Starting at %7d :%7d",
+        telemetry.addData("DcMotors", "Starting at %7d :%7d",
+                rightFrontDrive.getCurrentPosition(),
+                leftFrontDrive.getCurrentPosition()),
                 rightBackDrive.getCurrentPosition(),
-                leftBackDrive.getCurrentPosition());
+                leftBackDrive.getCurrentPosition()),
+                //spinner.getCurrentPosition());
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -111,13 +115,17 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
             // Setup a variable for each drive wheel to save power level for telemetry
 
-            telemetry.addData("BackMotors", "Starting at %7d :%7d",
+            telemetry.addData("DcMotors", "Starting at %7d :%7d",
+                    rightFrontDrive.getCurrentPosition(),
+                    leftFrontDrive.getCurrentPosition()),
                     rightBackDrive.getCurrentPosition(),
-                    leftBackDrive.getCurrentPosition());
+                    leftBackDrive.getCurrentPosition()),
+                    //spinner.getCurrentPosition());
             telemetry.update();
 
             moveForward(547, 1);
             moveSideways(547, 1);
+            moveTurning(3000, 1);
             //moveForward(0, 1);
             //moveSideways(0, 1);
             break;
@@ -182,6 +190,43 @@ public class BasicOpMode_Auto extends LinearOpMode {
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
+    public void spin(int ticks, double speed) {
 
+        leftFrontDrive.setTargetPosition(ticks);
+        rightFrontDrive.setTargetPosition(-ticks);
+        leftBackDrive.setTargetPosition(-ticks);
+        rightBackDrive.setTargetPosition(ticks);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFrontDrive.setPower(speed);
+        rightFrontDrive.setPower(speed);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setPower(speed);
+        while (leftFrontDrive.isBusy()) {
+            telemetry.update();
+        }
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
+    public void spinner(int ticks, double speed) {
+
+        //spinner.setTargetPosition(ticks);
+
+        //spinner.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //spinner.setPower(speed);
+        while (leftFrontDrive.isBusy()) {
+            telemetry.update();
+        }
+        //spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
 
 }
