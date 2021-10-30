@@ -98,12 +98,12 @@ public class BasicOpMode_Auto extends LinearOpMode {
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
 
-        telemetry.addData("DcMotors", "Starting at %7d :%7d",
+        telemetry.addData("DcMotors", "Starting at %7d :%7d :%7d :%7d",
                 rightFrontDrive.getCurrentPosition(),
-                leftFrontDrive.getCurrentPosition()),
+                leftFrontDrive.getCurrentPosition(),
                 rightBackDrive.getCurrentPosition(),
-                leftBackDrive.getCurrentPosition()),
-                //spinner.getCurrentPosition());
+                leftBackDrive.getCurrentPosition());
+        //spinner.getCurrentPosition());
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -111,37 +111,50 @@ public class BasicOpMode_Auto extends LinearOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
+
+
+        // Setup a variable for each drive wheel to save power level for telemetry
+
+        telemetry.addData("DcMotors", "Starting at %7d :%7d :%7d :%7d",
+                rightFrontDrive.getCurrentPosition(),
+                leftFrontDrive.getCurrentPosition(),
+                rightBackDrive.getCurrentPosition(),
+                leftBackDrive.getCurrentPosition());
+        //spinner.getCurrentPosition());
+        telemetry.update();
+
+        moveForward(547, 1);
+        waitForDriveMotors();
+        moveRotate(300, 1); //positive means right negative means left
+        waitForDriveMotors();
+        moveSideways(500, 1);
+
+
+
+
+
+        //moveSideways(547, 1);
+        //moveForward(0, 1);
+        //moveSideways(0, 1);
         while (opModeIsActive()) {
-
-            // Setup a variable for each drive wheel to save power level for telemetry
-
-            telemetry.addData("DcMotors", "Starting at %7d :%7d",
-                    rightFrontDrive.getCurrentPosition(),
-                    leftFrontDrive.getCurrentPosition()),
-                    rightBackDrive.getCurrentPosition(),
-                    leftBackDrive.getCurrentPosition()),
-                    //spinner.getCurrentPosition());
-            telemetry.update();
-
-            moveForward(547, 1);
-            moveSideways(547, 1);
-            moveTurning(3000, 1);
-            //moveForward(0, 1);
-            //moveSideways(0, 1);
-            break;
-            // leftFrontDrive.setPower((moveY + rotate + moveX) / 2);
-            // rightFrontDrive.setPower((moveY - rotate - moveX) / 2);
-            // rightBackDrive.setPower((0 - moveY - rotate + moveX) / 2);
-            // leftBackDrive.setPower((0 - moveY + rotate - moveX) / 2);
-
-
-            //spinner.setPower(rSpin - lSpin);
-
-
         }
+        // leftFrontDrive.setPower((moveY + rotate + moveX) / 2);
+        // rightFrontDrive.setPower((moveY - rotate - moveX) / 2);
+        // rightBackDrive.setPower((0 - moveY - rotate + moveX) / 2);
+        // leftBackDrive.setPower((0 - moveY + rotate - moveX) / 2);
+
+
+        //spinner.setPower(rSpin - lSpin);
+
+
     }
 
     public void moveForward(int ticks, double speed) {
+
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFrontDrive.setTargetPosition(ticks);
         rightFrontDrive.setTargetPosition(ticks);
@@ -157,15 +170,15 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightFrontDrive.setPower(speed);
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
-        while (leftFrontDrive.isBusy()) {
-            telemetry.update();
-        }
+
+    }
+
+    public void moveSideways(int ticks, double speed) {
+
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-    public void moveSideways(int ticks, double speed) {
 
         leftFrontDrive.setTargetPosition(ticks);
         rightFrontDrive.setTargetPosition(-ticks);
@@ -181,16 +194,16 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightFrontDrive.setPower(speed);
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
-        while (leftFrontDrive.isBusy()) {
-            telemetry.update();
-        }
+
+
+    }
+
+    public void moveRotate(int ticks, double speed) {
+
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-    }
-    public void spin(int ticks, double speed) {
 
         leftFrontDrive.setTargetPosition(ticks);
         rightFrontDrive.setTargetPosition(-ticks);
@@ -209,23 +222,25 @@ public class BasicOpMode_Auto extends LinearOpMode {
         while (leftFrontDrive.isBusy()) {
             telemetry.update();
         }
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
     }
-    public void spinner(int ticks, double speed) {
 
-        //spinner.setTargetPosition(ticks);
+    public void waitForDriveMotors() {
 
-        //spinner.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        //spinner.setPower(speed);
-        while (leftFrontDrive.isBusy()) {
+        while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() || leftBackDrive.isBusy() || rightBackDrive.isBusy())
+        {
             telemetry.update();
         }
-        //spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
+
+
+    public void spinnerStart() {
+
+    }
+
+    public void spinnerEnd() {
 
     }
 

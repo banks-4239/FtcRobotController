@@ -61,7 +61,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotor spinner = null;
+    //private DcMotor spinner = null;
 
 
 
@@ -77,13 +77,13 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "fr");
         leftBackDrive = hardwareMap.get(DcMotor.class, "bl");
         rightBackDrive = hardwareMap.get(DcMotor.class, "br");
-        spinner = hardwareMap.get(DcMotor.class, "sc");
+        //ner = hardwareMap.get(DcMotor.class, "sc");
 
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        spinner.setDirection(DcMotor.Direction.REVERSE);
+        //spinner.setDirection(DcMotor.Direction.REVERSE);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -104,8 +104,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             boolean fast = gamepad1.x;
 
-            double rSpin = gamepad1.right_trigger;
-            double lSpin = gamepad1.left_trigger;
+            //double rSpin = gamepad1.right_trigger;
+            //double lSpin = gamepad1.left_trigger;
 
                     // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
@@ -127,24 +127,24 @@ public class BasicOpMode_Linear extends LinearOpMode {
             if(fast) {
                 leftFrontDrive.setPower(moveY + rotate + moveX);
                 rightFrontDrive.setPower(moveY - rotate - moveX);
-                rightBackDrive.setPower(0 - moveY - rotate + moveX);
-                leftBackDrive.setPower(0 - moveY + rotate - moveX);
+                rightBackDrive.setPower(moveY - rotate + moveX);
+                leftBackDrive.setPower(moveY + rotate - moveX);
             }else{
                 leftFrontDrive.setPower((moveY + rotate + moveX) / 2);
                 rightFrontDrive.setPower((moveY - rotate - moveX) / 2);
-                rightBackDrive.setPower((0 - moveY - rotate + moveX) / 2);
-                leftBackDrive.setPower((0 - moveY + rotate - moveX) / 2);
+                rightBackDrive.setPower((moveY - rotate + moveX) / 2);
+                leftBackDrive.setPower((moveY + rotate - moveX) / 2);
             }
 
 
 
-            spinner.setPower(rSpin - lSpin);
+            //spinner.setPower(rSpin - lSpin);
 
 
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Spinner", "left (%.2f)", gamepad1.right_trigger);
+            //telemetry.addData("Spinner", "left (%.2f)", gamepad1.right_trigger);
         }
     }
 }
