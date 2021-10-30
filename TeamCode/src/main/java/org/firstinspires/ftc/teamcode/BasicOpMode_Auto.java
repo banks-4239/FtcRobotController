@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.sun.tools.javac.util.Convert;
 
 
 /**
@@ -61,7 +62,11 @@ public class BasicOpMode_Auto extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     //private DcMotor spinner = null;
     //private DcMotor spinner = null;
+    double mmperin = 0.039701;
 
+    double ticksperrotation = 537.7;
+    double wheeldiameter = 100;
+    double pi = 3.1415;
 
     @Override
     public void runOpMode() {
@@ -123,14 +128,23 @@ public class BasicOpMode_Auto extends LinearOpMode {
         //spinner.getCurrentPosition());
         telemetry.update();
 
-        moveForward(547, 1);
+        //moveForward(10, 1);
+        //waitForDriveMotors();
+        moveForward(24, 1);
         waitForDriveMotors();
-        moveRotate(300, 1); //positive means right negative means left
+        moveRotate(180, 1); //positive means right negative means left
         waitForDriveMotors();
-        moveSideways(500, 1);
-
-
-
+        moveForward(24, 1);
+        waitForDriveMotors();
+        moveRotate(180, 1); //positive means right negative means left
+        waitForDriveMotors();
+        moveForward(24, 1);
+        waitForDriveMotors();
+        moveRotate(180, 1); //positive means right negative means left
+        waitForDriveMotors();
+        moveForward(24, 1);
+        waitForDriveMotors();
+        //moveSideways(10, 1);
 
 
         //moveSideways(547, 1);
@@ -149,17 +163,24 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     }
 
-    public void moveForward(int ticks, double speed) {
+
+
+
+    public int inchestoticks(float inches) {
+        return (int) Math.round((inches * ticksperrotation) / (mmperin * wheeldiameter * pi));
+    }
+
+    public void moveForward(int inches, double speed) {
 
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(ticks);
-        rightFrontDrive.setTargetPosition(ticks);
-        leftBackDrive.setTargetPosition(ticks);
-        rightBackDrive.setTargetPosition(ticks);
+        leftFrontDrive.setTargetPosition(inchestoticks(inches));
+        rightFrontDrive.setTargetPosition(inchestoticks(inches));
+        leftBackDrive.setTargetPosition(inchestoticks(inches));
+        rightBackDrive.setTargetPosition(inchestoticks(inches));
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -173,17 +194,17 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     }
 
-    public void moveSideways(int ticks, double speed) {
+    public void moveRotate(int degrees, double speed) {
 
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(ticks);
-        rightFrontDrive.setTargetPosition(-ticks);
-        leftBackDrive.setTargetPosition(ticks);
-        rightBackDrive.setTargetPosition(-ticks);
+        leftFrontDrive.setTargetPosition(degrees * 12);
+        rightFrontDrive.setTargetPosition(-degrees * 12);
+        leftBackDrive.setTargetPosition(degrees * 12);
+        rightBackDrive.setTargetPosition(-degrees * 12);
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -198,17 +219,16 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     }
 
-    public void moveRotate(int ticks, double speed) {
-
+    public void moveDiagonal(int inches, double speed){//WORK IN PROGRESS
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(ticks);
-        rightFrontDrive.setTargetPosition(-ticks);
-        leftBackDrive.setTargetPosition(-ticks);
-        rightBackDrive.setTargetPosition(ticks);
+        //leftFrontDrive.setTargetPosition(inchestoticks(inches));
+        rightFrontDrive.setTargetPosition(-inchestoticks(inches));
+        leftBackDrive.setTargetPosition(-inchestoticks(inches));
+        //rightBackDrive.setTargetPosition(inchestoticks(inches));
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -219,20 +239,43 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightFrontDrive.setPower(speed);
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
-        while (leftFrontDrive.isBusy()) {
-            telemetry.update();
-        }
+    }
+
+
+    public void moveSideways(int inches, double speed) {
+
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFrontDrive.setTargetPosition(inchestoticks(inches));
+        rightFrontDrive.setTargetPosition(-inchestoticks(inches));
+        leftBackDrive.setTargetPosition(-inchestoticks(inches));
+        rightBackDrive.setTargetPosition(inchestoticks(inches));
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFrontDrive.setPower(speed);
+        rightFrontDrive.setPower(speed);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setPower(speed);
 
 
     }
 
     public void waitForDriveMotors() {
 
-        while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() || leftBackDrive.isBusy() || rightBackDrive.isBusy())
-        {
+        while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() || leftBackDrive.isBusy() || rightBackDrive.isBusy()) {
             telemetry.update();
         }
-
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
     }
 
 

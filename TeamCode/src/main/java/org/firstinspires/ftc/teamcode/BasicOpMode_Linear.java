@@ -61,7 +61,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
-    //private DcMotor spinner = null;
+    private DcMotor spinner = null;
 
 
 
@@ -77,13 +77,13 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "fr");
         leftBackDrive = hardwareMap.get(DcMotor.class, "bl");
         rightBackDrive = hardwareMap.get(DcMotor.class, "br");
-        //ner = hardwareMap.get(DcMotor.class, "sc");
+        spinner = hardwareMap.get(DcMotor.class, "sc");
 
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        //spinner.setDirection(DcMotor.Direction.REVERSE);
+        spinner.setDirection(DcMotor.Direction.REVERSE);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -104,8 +104,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             boolean fast = gamepad1.x;
 
-            //double rSpin = gamepad1.right_trigger;
-            //double lSpin = gamepad1.left_trigger;
+            double rSpin = gamepad1.right_trigger;
+            double lSpin = gamepad1.left_trigger;
 
                     // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
@@ -138,7 +138,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
 
 
-            //spinner.setPower(rSpin - lSpin);
+            spinner.setPower(rSpin - lSpin);
 
 
 
