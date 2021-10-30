@@ -60,11 +60,14 @@ public class BasicOpMode_Auto extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
-    //private DcMotor spinner = null;
-    //private DcMotor spinner = null;
+    private DcMotor robotArm = null;
+    private DcMotor intake = null;
+    private DcMotor spinner = null;
+
     double mmperin = 0.039701;
 
     double ticksperrotation = 537.7;
+    double ticksperdegree = 1.49361111111;
     double wheeldiameter = 100;
     double pi = 3.1415;
 
@@ -80,25 +83,33 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "fr");
         leftBackDrive = hardwareMap.get(DcMotor.class, "bl");
         rightBackDrive = hardwareMap.get(DcMotor.class, "br");
-        //spinner = hardwareMap.get(DcMotor.class, "sc");
+        robotArm = hardwareMap.get(DcMotor.class, "ra");
+        intake = hardwareMap.get(DcMotor.class, "ra");
+        spinner = hardwareMap.get(DcMotor.class, "sc");
 
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        //spinner.setDirection(DcMotor.Direction.REVERSE);
+        spinner.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotor.Direction.REVERSE);
+        robotArm.setDirection(DcMotor.Direction.REVERSE);
 
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robotArm.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotor.Direction.REVERSE);
 
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //spinner.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robotArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -128,28 +139,18 @@ public class BasicOpMode_Auto extends LinearOpMode {
         //spinner.getCurrentPosition());
         telemetry.update();
 
-        //moveForward(10, 1);
-        //waitForDriveMotors();
+
+        //enter autonomous scripting here//////////////////////////////////////////////////////////////////////////////////////////
+
         moveForward(24, 1);
+        liftArm(50, 1);
         waitForDriveMotors();
-        moveRotate(180, 1); //positive means right negative means left
-        waitForDriveMotors();
-        moveForward(24, 1);
-        waitForDriveMotors();
-        moveRotate(180, 1); //positive means right negative means left
-        waitForDriveMotors();
-        moveForward(24, 1);
-        waitForDriveMotors();
-        moveRotate(180, 1); //positive means right negative means left
-        waitForDriveMotors();
-        moveForward(24, 1);
-        waitForDriveMotors();
-        //moveSideways(10, 1);
 
 
-        //moveSideways(547, 1);
-        //moveForward(0, 1);
-        //moveSideways(0, 1);
+
+
+        //end autonomous scripting here////////////////////////////////////////////////////////////////////////////////////////////
+
         while (opModeIsActive()) {
         }
         // leftFrontDrive.setPower((moveY + rotate + moveX) / 2);
@@ -166,7 +167,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
 
 
-    public int inchestoticks(float inches) {
+    public int inchestoticks(double inches) {
         return (int) Math.round((inches * ticksperrotation) / (mmperin * wheeldiameter * pi));
     }
 
@@ -191,6 +192,17 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightFrontDrive.setPower(speed);
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
+
+    }
+
+    public void liftArm(int degrees, double speed) {
+
+        robotArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robotArm.setTargetPosition(inchestoticks(degrees * ticksperdegree));
+
+
+        robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robotArm.setPower(speed);
 
     }
 
@@ -267,6 +279,22 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     }
 
+    public void takeIn(double speed){
+
+        intake.setPower(speed);
+
+    }
+
+    public void takeOut(double speed){
+
+        intake.setPower(-speed);
+
+    }
+
+    void intakeOff(){
+        intake.setPower(0);
+    }
+
     public void waitForDriveMotors() {
 
         while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() || leftBackDrive.isBusy() || rightBackDrive.isBusy()) {
@@ -279,12 +307,16 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
 
-    public void spinnerStart() {
-
+    public void spinnerLeft(double speed) {
+        spinner.setPower(-speed);
     }
 
-    public void spinnerEnd() {
+    public void spinnerRight(double speed) {
+        spinner.setPower(speed);
+    }
 
+    public void spinnerEnd(double speed) {
+        spinner.setPower(0);
     }
 
 }
