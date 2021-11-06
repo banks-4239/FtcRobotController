@@ -61,6 +61,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
+    private DcMotor robotArm = null;
+    private DcMotor intake = null;
     private DcMotor spinner = null;
 
 
@@ -77,6 +79,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "fr");
         leftBackDrive = hardwareMap.get(DcMotor.class, "bl");
         rightBackDrive = hardwareMap.get(DcMotor.class, "br");
+        robotArm = hardwareMap.get(DcMotor.class, "ra");
+        //intake = hardwareMap.get(DcMotor.class, "in");
         spinner = hardwareMap.get(DcMotor.class, "sc");
 
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -84,6 +88,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         spinner.setDirection(DcMotor.Direction.REVERSE);
+        //intake.setDirection(DcMotor.Direction.REVERSE);
+        robotArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -100,12 +106,16 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double moveX = gamepad1.left_stick_x;
             double moveY = gamepad1.left_stick_y;
 
+            boolean spinLeft = gamepad1.left_bumper;
+            boolean spinRight = gamepad1.right_bumper;
+
             double rotate = gamepad1.right_stick_x;
 
             boolean fast = gamepad1.x;
 
-            double rSpin = gamepad1.right_trigger;
-            double lSpin = gamepad1.left_trigger;
+            double armUp = gamepad1.right_trigger;
+            double armDown = gamepad1.left_trigger;
+
 
                     // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
@@ -136,9 +146,17 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 leftBackDrive.setPower((moveY + rotate - moveX) / 2);
             }
 
+            if(spinLeft){
+                spinner.setPower(0.5);
+            }else{
+                if(spinRight){
+                    spinner.setPower(-0.5);
+                }else{
+                    spinner.setPower(0);
+                }
+            }
 
-
-            spinner.setPower(rSpin - lSpin);
+            robotArm.setPower(armUp - armDown);
 
 
 

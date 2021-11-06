@@ -31,10 +31,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.sun.tools.javac.util.Convert;
 
 
 /**
@@ -72,7 +70,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
     double pi = 3.1415;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -84,7 +82,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "bl");
         rightBackDrive = hardwareMap.get(DcMotor.class, "br");
         robotArm = hardwareMap.get(DcMotor.class, "ra");
-        intake = hardwareMap.get(DcMotor.class, "ra");
+        intake = hardwareMap.get(DcMotor.class, "in");
         spinner = hardwareMap.get(DcMotor.class, "sc");
 
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -99,7 +97,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robotArm.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
 
@@ -142,11 +140,21 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
         //enter autonomous scripting here//////////////////////////////////////////////////////////////////////////////////////////
 
-        moveForward(24, 1);
-        liftArm(50, 1);
+
+        moveForward(-5, 1);
         waitForDriveMotors();
-
-
+        moveSideways(-7, 1);
+        waitForDriveMotors();
+        spinnerRed(0.5);
+        sleep(2500);
+        spinnerEnd();
+        moveSideways(7,1);
+        waitForDriveMotors();
+        moveForward(6,1 );
+        waitForDriveMotors();
+        moveForward(-24.5,1);
+        waitForDriveMotors();
+        moveSideways(-11,1);
 
 
         //end autonomous scripting here////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +179,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
         return (int) Math.round((inches * ticksperrotation) / (mmperin * wheeldiameter * pi));
     }
 
-    public void moveForward(int inches, double speed) {
+    public void moveForward(double inches, double speed) {
 
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -231,7 +239,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     }
 
-    public void moveDiagonal(int inches, double speed){//WORK IN PROGRESS
+    public void moveDiagonal(double inches, double speed){//WORK IN PROGRESS
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -254,7 +262,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
 
-    public void moveSideways(int inches, double speed) {
+    public void moveSideways(double inches, double speed) {
 
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -307,15 +315,17 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
 
-    public void spinnerLeft(double speed) {
+
+
+    public void spinnerBlue(double speed) {
         spinner.setPower(-speed);
     }
 
-    public void spinnerRight(double speed) {
+    public void spinnerRed(double speed) {
         spinner.setPower(speed);
     }
 
-    public void spinnerEnd(double speed) {
+    public void spinnerEnd() {
         spinner.setPower(0);
     }
 
