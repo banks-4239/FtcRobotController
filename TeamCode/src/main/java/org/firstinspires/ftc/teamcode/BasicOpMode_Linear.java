@@ -80,7 +80,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "bl");
         rightBackDrive = hardwareMap.get(DcMotor.class, "br");
         robotArm = hardwareMap.get(DcMotor.class, "ra");
-        //intake = hardwareMap.get(DcMotor.class, "in");
+        intake = hardwareMap.get(DcMotor.class, "in");
         spinner = hardwareMap.get(DcMotor.class, "sc");
 
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -88,7 +88,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         spinner.setDirection(DcMotor.Direction.REVERSE);
-        //intake.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotor.Direction.FORWARD );
         robotArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -111,7 +111,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             double rotate = gamepad1.right_stick_x;
 
-            boolean fast = gamepad1.x;
+            boolean fast = gamepad1.right_stick_button ;
+
+            boolean takingIn = gamepad1.a;
+            boolean takingOut = gamepad1.b;
 
             double armUp = gamepad1.right_trigger;
             double armDown = gamepad1.left_trigger;
@@ -146,6 +149,16 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 leftBackDrive.setPower((moveY + rotate - moveX) / 2);
             }
 
+            if(takingIn){
+                intake.setPower(1);
+            }
+            if(takingOut){
+                intake.setPower(-1);
+            }
+            if((takingOut == false) && (takingIn == false)){
+                intake.setPower(0);
+            }
+
             if(spinLeft){
                 spinner.setPower(0.5);
             }else{
@@ -156,9 +169,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 }
             }
 
-            robotArm.setPower(armUp - armDown);
-
-
+            if(robotArm.getCurrentPosition() >= 0){
+                robotArm.setPower(armUp - armDown);
+            }else{
+                robotArm.setPower(armUp);
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

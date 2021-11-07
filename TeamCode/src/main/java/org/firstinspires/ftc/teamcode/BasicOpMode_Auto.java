@@ -52,6 +52,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 public class BasicOpMode_Auto extends LinearOpMode {
 
+    boolean choosingAuto = false;
+    int autoMode = 0;
+
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
@@ -68,6 +71,11 @@ public class BasicOpMode_Auto extends LinearOpMode {
     double ticksperdegree = 1.49361111111;
     double wheeldiameter = 100;
     double pi = 3.1415;
+
+    private static final int RED_DUCK        = 1;
+    private static final int RED_WAREHOUSE   = 2;
+    private static final int BLUE_DUCK       = 3;
+    private static final int BLUE_WAREHOUSE  = 4;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -112,15 +120,38 @@ public class BasicOpMode_Auto extends LinearOpMode {
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
 
+        telemetry.addData("Please choose a mode!", "up - redDuck, right - redWarehouse, left - blueDuck, down - blueWarehouse");
+        telemetry.update();
+
+        // Wait for the game to start (driver presses PLAY)
+
+        while(choosingAuto == false){
+            if(gamepad1.dpad_up && gamepad1.a){
+                choosingAuto = true;
+                autoMode = RED_DUCK;
+            }
+            if(gamepad1.dpad_down && gamepad1.a){
+                choosingAuto = true;
+                autoMode = BLUE_WAREHOUSE;
+            }
+            if(gamepad1.dpad_left && gamepad1.a){
+                choosingAuto = true;
+                autoMode = BLUE_DUCK;
+            }
+            if(gamepad1.dpad_right && gamepad1.a){
+                choosingAuto = true;
+                autoMode = RED_WAREHOUSE;
+            }
+        }
+
+        telemetry.clearAll();
         telemetry.addData("DcMotors", "Starting at %7d :%7d :%7d :%7d",
                 rightFrontDrive.getCurrentPosition(),
                 leftFrontDrive.getCurrentPosition(),
                 rightBackDrive.getCurrentPosition(),
                 leftBackDrive.getCurrentPosition());
-        //spinner.getCurrentPosition());
         telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
@@ -139,23 +170,32 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
 
         //enter autonomous scripting here//////////////////////////////////////////////////////////////////////////////////////////
+        switch(autoMode) {
+            case RED_DUCK:
+                moveForward(-5, 1);
+                waitForDriveMotors();
+                moveSideways(-8, 1);
+                waitForDriveMotors();
+                spinnerRed(0.5);
+                sleep(2500);
+                spinnerEnd();
+                moveSideways(8, 1);
+                waitForDriveMotors();
+                moveForward(6, 1);
+                waitForDriveMotors();
+                moveForward(-24.5, 1);
+                waitForDriveMotors();
+                moveSideways(-11, 1);
+                break;
 
-
-        moveForward(-5, 1);
-        waitForDriveMotors();
-        moveSideways(-7, 1);
-        waitForDriveMotors();
-        spinnerRed(0.5);
-        sleep(2500);
-        spinnerEnd();
-        moveSideways(7,1);
-        waitForDriveMotors();
-        moveForward(6,1 );
-        waitForDriveMotors();
-        moveForward(-24.5,1);
-        waitForDriveMotors();
-        moveSideways(-11,1);
-
+            case RED_WAREHOUSE:
+                moveForward(-27,1);
+                waitForDriveMotors();
+                moveSideways(-19,1);
+                waitForDriveMotors();
+                moveForward(-45,1);
+                break;
+        }
 
         //end autonomous scripting here////////////////////////////////////////////////////////////////////////////////////////////
 
