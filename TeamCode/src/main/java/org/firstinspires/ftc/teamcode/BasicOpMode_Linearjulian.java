@@ -101,10 +101,10 @@ public class BasicOpMode_Linearjulian extends LinearOpMode {
         double turn = gamepad1.right_stick_x;
         double strafe = gamepad1.left_stick_x;
 
-        double frontleftPower = drive;
-        double frontrightPower = drive;
-        double backleftPower = drive;
-        double backrightPower = drive;
+        double frontleftPower = drive+strafe+turn;
+        double frontrightPower = drive+strafe+turn;
+        double backleftPower = drive+strafe+turn;
+        double backrightPower = drive+strafe+turn;
 
         // Send calculated power to wheels
         frontleftDrive.setPower(frontleftPower);
