@@ -72,10 +72,10 @@ public class BasicOpMode_Auto extends LinearOpMode {
     double wheeldiameter = 100;
     double pi = 3.1415;
 
-    private static final int RED_DUCK        = 1;
-    private static final int RED_WAREHOUSE   = 2;
-    private static final int BLUE_DUCK       = 3;
-    private static final int BLUE_WAREHOUSE  = 4;
+    private static final int RED_DUCK = 1;
+    private static final int RED_WAREHOUSE = 2;
+    private static final int BLUE_DUCK = 3;
+    private static final int BLUE_WAREHOUSE = 4;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -116,7 +116,6 @@ public class BasicOpMode_Auto extends LinearOpMode {
         robotArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
 
@@ -125,20 +124,20 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
 
-        while(choosingAuto == false){
-            if(gamepad1.dpad_up && gamepad1.a){
+        while (choosingAuto == false) {
+            if (gamepad1.dpad_up && gamepad1.a) {
                 choosingAuto = true;
                 autoMode = RED_DUCK;
             }
-            if(gamepad1.dpad_down && gamepad1.a){
+            if (gamepad1.dpad_down && gamepad1.a) {
                 choosingAuto = true;
                 autoMode = BLUE_WAREHOUSE;
             }
-            if(gamepad1.dpad_left && gamepad1.a){
+            if (gamepad1.dpad_left && gamepad1.a) {
                 choosingAuto = true;
                 autoMode = BLUE_DUCK;
             }
-            if(gamepad1.dpad_right && gamepad1.a){
+            if (gamepad1.dpad_right && gamepad1.a) {
                 choosingAuto = true;
                 autoMode = RED_WAREHOUSE;
             }
@@ -170,7 +169,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
 
         //enter autonomous scripting here//////////////////////////////////////////////////////////////////////////////////////////
-        switch(autoMode) {
+        switch (autoMode) {
             case RED_DUCK:
                 moveForward(-5, 1);
                 waitForDriveMotors();
@@ -189,12 +188,46 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 break;
 
             case RED_WAREHOUSE:
-                moveForward(-27,1);
+                liftArm(30, 1);
                 waitForDriveMotors();
-                moveSideways(-19,1);
+                moveForward(-27, 1);
                 waitForDriveMotors();
-                moveForward(-45,1);
+                moveSideways(-19, 1);
+                waitForDriveMotors();
+                moveForward(-45, 1);
+                waitForDriveMotors();
+                liftArm(-30, 1);
                 break;
+
+            case BLUE_DUCK:
+                moveSideways(5, 1);
+                waitForDriveMotors();
+                moveForward(4, 1);
+                waitForDriveMotors();
+                spinnerBlue(0.5);
+                sleep(2500);
+                spinnerEnd();
+                moveForward(-5, 1);
+                waitForDriveMotors();
+                moveSideways(-6, 1);
+                waitForDriveMotors();
+                moveSideways(35, 1);
+                waitForDriveMotors();
+                moveForward(8, 1);
+                break;
+
+            case BLUE_WAREHOUSE:
+                liftArm(30, 1);
+                waitForDriveMotors();
+                moveForward(-27, 1);
+                waitForDriveMotors();
+                moveSideways(19, 1);
+                waitForDriveMotors();
+                moveForward(-45, 1);
+                waitForDriveMotors();
+                liftArm(-30, 1);
+                break;
+
         }
 
         //end autonomous scripting here////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,8 +244,6 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
 
     }
-
-
 
 
     public int inchestoticks(double inches) {
@@ -279,7 +310,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     }
 
-    public void moveDiagonal(double inches, double speed){//WORK IN PROGRESS
+    public void moveDiagonal(double inches, double speed) {//WORK IN PROGRESS
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -327,19 +358,19 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     }
 
-    public void takeIn(double speed){
+    public void takeIn(double speed) {
 
         intake.setPower(speed);
 
     }
 
-    public void takeOut(double speed){
+    public void takeOut(double speed) {
 
         intake.setPower(-speed);
 
     }
 
-    void intakeOff(){
+    void intakeOff() {
         intake.setPower(0);
     }
 
@@ -352,6 +383,18 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightFrontDrive.setPower(0);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
+    }
+
+    public void waitForArm() {
+
+        while (robotArm.isBusy());
+        {
+            telemetry.update();
+        }
+
+        robotArm.setPower(0);
+
+
     }
 
 

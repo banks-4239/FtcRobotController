@@ -87,9 +87,12 @@ public class BasicOpMode_Linear extends LinearOpMode {
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        spinner.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.FORWARD );
+        spinner.setDirection(DcMotor.Direction.FORWARD);
+        intake.setDirection(DcMotor.Direction.FORWARD);
         robotArm.setDirection(DcMotor.Direction.REVERSE);
+
+        robotArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robotArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -101,6 +104,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+
 
             // Setup a variable for each drive wheel to save power level for telemetry
             double moveX = gamepad1.left_stick_x;
@@ -118,6 +123,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             double armUp = gamepad1.right_trigger;
             double armDown = gamepad1.left_trigger;
+
+            boolean armMoving;
 
 
                     // Choose to drive using either Tank Mode, or POV Mode
@@ -143,10 +150,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 rightBackDrive.setPower(moveY - rotate + moveX);
                 leftBackDrive.setPower(moveY + rotate - moveX);
             }else{
-                leftFrontDrive.setPower((moveY + rotate + moveX) / 2);
-                rightFrontDrive.setPower((moveY - rotate - moveX) / 2);
-                rightBackDrive.setPower((moveY - rotate + moveX) / 2);
-                leftBackDrive.setPower((moveY + rotate - moveX) / 2);
+                leftFrontDrive.setPower(((moveY / 2) + rotate + (moveX / 2)));
+                rightFrontDrive.setPower(((moveY / 2) - rotate - (moveX / 2)));
+                rightBackDrive.setPower(((moveY / 2) - rotate + (moveX / 2)));
+                leftBackDrive.setPower(((moveY / 2) + rotate - (moveX / 2)));
             }
 
             if(takingIn){
@@ -178,6 +185,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             //telemetry.addData("Spinner", "left (%.2f)", gamepad1.right_trigger);
+
+
+
         }
     }
 }
