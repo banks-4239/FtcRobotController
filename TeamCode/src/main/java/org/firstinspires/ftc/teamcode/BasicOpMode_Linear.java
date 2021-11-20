@@ -114,6 +114,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
             boolean spinLeft = gamepad1.left_bumper;
             boolean spinRight = gamepad1.right_bumper;
 
+            boolean toggleButton = gamepad1.x;
+
             double rotate = gamepad1.right_stick_x;
 
             boolean fast = gamepad1.right_stick_button ;
@@ -155,6 +157,13 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 rightBackDrive.setPower(((moveY / 2) - rotate + (moveX / 2)));
                 leftBackDrive.setPower(((moveY / 2) + rotate - (moveX / 2)));
             }
+
+
+
+            if(gamepad1.x == true){
+
+            }
+
 
             if(takingIn){
                 intake.setPower(1);
