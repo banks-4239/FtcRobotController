@@ -65,7 +65,12 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor intake = null;
     private DcMotor spinner = null;
 
+    double mmperin = 0.039701;
 
+    double ticksperrotation = 537.7;
+    double ticksperdegree = 1.06805555556;
+    double wheeldiameter = 100;
+    double pi = 3.1415;
 
     @Override
     public void runOpMode() {
@@ -94,6 +99,13 @@ public class BasicOpMode_Linear extends LinearOpMode {
         robotArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robotArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        boolean facingFront = true;
+        int toggled = 0;
+
+
+
+        boolean cutscene = false;
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
 
@@ -116,6 +128,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             boolean toggleButton = gamepad1.x;
 
+
             double rotate = gamepad1.right_stick_x;
 
             boolean fast = gamepad1.right_stick_button ;
@@ -125,6 +138,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             double armUp = gamepad1.right_trigger;
             double armDown = gamepad1.left_trigger;
+
+
 
             boolean armMoving;
 
@@ -146,57 +161,200 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             // Send calculated power to wheels
 
-            if(fast) {
-                leftFrontDrive.setPower(moveY + rotate + moveX);
-                rightFrontDrive.setPower(moveY - rotate - moveX);
-                rightBackDrive.setPower(moveY - rotate + moveX);
-                leftBackDrive.setPower(moveY + rotate - moveX);
-            }else{
-                leftFrontDrive.setPower(((moveY / 2) + rotate + (moveX / 2)));
-                rightFrontDrive.setPower(((moveY / 2) - rotate - (moveX / 2)));
-                rightBackDrive.setPower(((moveY / 2) - rotate + (moveX / 2)));
-                leftBackDrive.setPower(((moveY / 2) + rotate - (moveX / 2)));
-            }
+            if(!cutscene) {
 
 
-
-            if(gamepad1.x == true){
-
-            }
-
-
-            if(takingIn){
-                intake.setPower(1);
-            }
-            if(takingOut){
-                intake.setPower(-1);
-            }
-            if((takingOut == false) && (takingIn == false)){
-                intake.setPower(0);
-            }
-
-            if(spinLeft){
-                spinner.setPower(0.5);
-            }else{
-                if(spinRight){
-                    spinner.setPower(-0.5);
-                }else{
-                    spinner.setPower(0);
+                if(gamepad1.back){
+                    cutscene = true;
                 }
+
+
+                if (facingFront) {
+                    if (fast) {
+                        leftFrontDrive.setPower(moveY + rotate + moveX);
+                        rightFrontDrive.setPower(moveY - rotate - moveX);
+                        rightBackDrive.setPower(moveY - rotate + moveX);
+                        leftBackDrive.setPower(moveY + rotate - moveX);
+                    } else {
+                        leftFrontDrive.setPower(((moveY / 2) + rotate + (moveX / 2)));
+                        rightFrontDrive.setPower(((moveY / 2) - rotate - (moveX / 2)));
+                        rightBackDrive.setPower(((moveY / 2) - rotate + (moveX / 2)));
+                        leftBackDrive.setPower(((moveY / 2) + rotate - (moveX / 2)));
+                    }
+                } else {
+                    if (fast) {
+                        leftFrontDrive.setPower(-moveY + rotate - moveX);
+                        rightFrontDrive.setPower(-moveY - rotate + moveX);
+                        rightBackDrive.setPower(-moveY - rotate - moveX);
+                        leftBackDrive.setPower(-moveY + rotate + moveX);
+                    } else {
+                        leftFrontDrive.setPower((-(moveY / 2) + rotate - (moveX / 2)));
+                        rightFrontDrive.setPower((-(moveY / 2) - rotate + (moveX / 2)));
+                        rightBackDrive.setPower((-(moveY / 2) - rotate - (moveX / 2)));
+                        leftBackDrive.setPower((-(moveY / 2) + rotate + (moveX / 2)));
+                    }
+                }
+
+
+                if (toggleButton == true && toggled == 0) {
+                    toggled = 1;
+                    facingFront = false;
+                }
+                if (toggleButton == false && toggled == 1) {
+                    toggled = 2;
+                }
+                if (toggleButton == true && toggled == 2) {
+                    toggled = 3;
+                    facingFront = true;
+                }
+                if (toggleButton == false && toggled == 3) {
+                    toggled = 0;
+                }
+
+
+                if (takingIn) {
+                    intake.setPower(1);
+                }
+                if (takingOut) {
+                    intake.setPower(-1);
+                }
+                if ((takingOut == false) && (takingIn == false)) {
+                    intake.setPower(0);
+                }
+
+                if (spinLeft) {
+                    spinner.setPower(0.5);
+                } else {
+                    if (spinRight) {
+                        spinner.setPower(-0.5);
+                    } else {
+                        spinner.setPower(0);
+                    }
+                }
+
+                if (robotArm.getCurrentPosition() >= 0) {
+                    robotArm.setPower(armUp - armDown);
+                } else {
+                    robotArm.setPower(armUp);
+                }
+
+            }else{
+
+                moveSideways(13,1);
+                waitForDriveMotors();
+                oneSide("Left",60,1);
+                waitForDriveMotors();
+                oneSide("Right",-10,1);
+                waitForDriveMotors();
+                moveSideways(13,1);
+                waitForDriveMotors();
+                leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                cutscene = false;
             }
 
-            if(robotArm.getCurrentPosition() >= 0){
-                robotArm.setPower(armUp - armDown);
-            }else{
-                robotArm.setPower(armUp);
-            }
+
+
+
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("", toggled);
             //telemetry.addData("Spinner", "left (%.2f)", gamepad1.right_trigger);
-
+            telemetry.update();
 
 
         }
     }
+
+    public int inchestoticks(double inches) {
+        return (int) Math.round((inches * ticksperrotation) / (mmperin * wheeldiameter * pi));
+    }
+
+    public void moveForward(double inches, double speed) {
+
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFrontDrive.setTargetPosition(inchestoticks(inches));
+        rightFrontDrive.setTargetPosition(inchestoticks(inches));
+        leftBackDrive.setTargetPosition(inchestoticks(inches));
+        rightBackDrive.setTargetPosition(inchestoticks(inches));
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFrontDrive.setPower(speed);
+        rightFrontDrive.setPower(speed);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setPower(speed);
+    }
+
+    public void oneSide(String side, double inches, double speed) {
+
+        if(side == "Right") {
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontDrive.setTargetPosition(inchestoticks(inches));
+            rightBackDrive.setTargetPosition(inchestoticks(inches));
+            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightFrontDrive.setPower(speed);
+            rightBackDrive.setPower(speed);
+        }
+        if(side == "Left") {
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftFrontDrive.setTargetPosition(inchestoticks(inches));
+            leftBackDrive.setTargetPosition(inchestoticks(inches));
+            leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontDrive.setPower(speed);
+            leftBackDrive.setPower(speed);
+        }
+    }
+
+    public void moveSideways(double inches, double speed) {
+
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFrontDrive.setTargetPosition(inchestoticks(inches));
+        rightFrontDrive.setTargetPosition(-inchestoticks(inches));
+        leftBackDrive.setTargetPosition(-inchestoticks(inches));
+        rightBackDrive.setTargetPosition(inchestoticks(inches));
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFrontDrive.setPower(speed);
+        rightFrontDrive.setPower(speed);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setPower(speed);
+
+
+    }
+
+    public void waitForDriveMotors() {
+
+        while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() || leftBackDrive.isBusy() || rightBackDrive.isBusy()) {
+            telemetry.update();
+        }
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+    }
+
 }

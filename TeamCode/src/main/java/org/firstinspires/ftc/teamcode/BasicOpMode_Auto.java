@@ -68,7 +68,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
     double mmperin = 0.039701;
 
     double ticksperrotation = 537.7;
-    double ticksperdegree = 1.49361111111;
+    double ticksperdegree = 1.06805555556;
     double wheeldiameter = 100;
     double pi = 3.1415;
 
@@ -188,15 +188,24 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 break;
 
             case RED_WAREHOUSE:
-                liftArm(30, 1);
+                moveForward(7, 1);
                 waitForDriveMotors();
-                moveForward(-27, 1);
+                liftArm(140, 0.5);
+                sleep(5000);
+                moveForward(10, 1);
                 waitForDriveMotors();
-                moveSideways(-19, 1);
+                takeOut(1);
+                sleep(1000);
+                intakeOff();
+                liftArm(-100, 0.5);
+                sleep(8000);
+                moveRotate(90,1);
                 waitForDriveMotors();
-                moveForward(-45, 1);
+                moveForward(65,1);
+                liftArm(-40, 0.5);
+                sleep(2000);
                 waitForDriveMotors();
-                liftArm(-30, 1);
+                moveRotate(180,0.5);
                 break;
 
             case BLUE_DUCK:
@@ -360,13 +369,13 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     public void takeIn(double speed) {
 
-        intake.setPower(speed);
+        intake.setPower(-speed);
 
     }
 
     public void takeOut(double speed) {
 
-        intake.setPower(-speed);
+        intake.setPower(speed);
 
     }
 
