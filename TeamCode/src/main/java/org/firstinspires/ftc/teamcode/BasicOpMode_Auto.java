@@ -67,15 +67,28 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     double mmperin = 0.039701;
 
+    int onSetting = 1;
+
+    boolean settingButtonDown1 = false;
+    boolean settingButtonDown2 = false;
+
     double ticksperrotation = 537.7;
     double ticksperdegree = 1.06805555556;
     double wheeldiameter = 100;
     double pi = 3.1415;
 
-    private static final int RED_DUCK = 1;
-    private static final int RED_WAREHOUSE = 2;
-    private static final int BLUE_DUCK = 3;
-    private static final int BLUE_WAREHOUSE = 4;
+    boolean redOrBlue = true;
+
+    String[] settings = {
+            "",
+            "Duck Freight",
+            "Duck No Freight",
+            "Warehouse Freight",
+            "Warehouse No Freight",
+            ""};
+
+
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -125,24 +138,53 @@ public class BasicOpMode_Auto extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
 
         while (choosingAuto == false) {
-            if (gamepad1.dpad_up && gamepad1.a) {
-                choosingAuto = true;
-                autoMode = RED_DUCK;
-            }
-            if (gamepad1.dpad_down && gamepad1.a) {
-                choosingAuto = true;
-                autoMode = BLUE_WAREHOUSE;
-            }
-            if (gamepad1.dpad_left && gamepad1.a) {
-                choosingAuto = true;
-                autoMode = BLUE_DUCK;
-            }
-            if (gamepad1.dpad_right && gamepad1.a) {
-                choosingAuto = true;
-                autoMode = RED_WAREHOUSE;
-            }
-        }
 
+
+
+            telemetry.addData("Please choose a setting", "");
+            if(redOrBlue){
+                telemetry.addData("Red", "");
+            }else{
+                telemetry.addData("Blue", "");
+            }
+            telemetry.addData("",settings[onSetting - 1]);
+            telemetry.addData("",">" + settings[onSetting]);
+            telemetry.addData("",settings[onSetting + 1]);
+            telemetry.update();
+            if (gamepad1.dpad_up) {
+                if(onSetting > 1 && settingButtonDown1 == false){
+                    onSetting--;
+                }
+                settingButtonDown1 = true;
+            }else{
+                settingButtonDown1 = false;
+            }
+            if (gamepad1.dpad_down) {
+                if(onSetting < 4 && settingButtonDown2 == false){
+                    onSetting++;
+                }
+                settingButtonDown2 = true;
+            }else{
+                settingButtonDown2 = false;
+            }
+            if(gamepad1.left_bumper){
+                redOrBlue = true;
+            }else if(gamepad1.right_bumper){
+                redOrBlue = false;
+            }
+            if(isStarted()){
+                if(redOrBlue){
+                    choosingAuto = true;
+                    autoMode = onSetting;
+                }else{
+                    choosingAuto = true;
+                    autoMode = onSetting + 4;
+                }
+            }
+
+
+        }
+/*
         telemetry.clearAll();
         telemetry.addData("DcMotors", "Starting at %7d :%7d :%7d :%7d",
                 rightFrontDrive.getCurrentPosition(),
@@ -150,7 +192,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 rightBackDrive.getCurrentPosition(),
                 leftBackDrive.getCurrentPosition());
         telemetry.update();
-
+*/
         waitForStart();
         runtime.reset();
 
@@ -170,7 +212,40 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
         //enter autonomous scripting here//////////////////////////////////////////////////////////////////////////////////////////
         switch (autoMode) {
-            case RED_DUCK:
+            case 1://red duck w/ freight
+                moveForward(-5, 1);
+                waitForDriveMotors();
+                moveSideways(-8, 1);
+                waitForDriveMotors();
+                spinnerRed(0.2);
+                sleep(4500);
+                spinnerEnd();
+                moveSideways(8, 1);
+                waitForDriveMotors();
+                moveForward(7, 1);
+                waitForDriveMotors();
+                moveForward(-35, 1);//
+                waitForDriveMotors();
+                moveRotate(-90, 1);
+                waitForDriveMotors();
+                moveForward(25,1);
+                liftArm(160,0.5);
+                sleep(1500);
+                takeOut(1);
+                sleep(3000);
+                intakeOff();
+                liftArm(-40,0.5);
+                sleep(1500);
+                moveForward(-25,1);
+                waitForDriveMotors();
+                moveRotate(90, 1);
+                waitForDriveMotors();
+                moveForward(20,1);
+                waitForDriveMotors();
+                moveSideways(-5,1);
+                break;
+
+            case 2://red duck no freight
                 moveForward(-5, 1);
                 waitForDriveMotors();
                 moveSideways(-8, 1);
@@ -187,7 +262,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 moveSideways(-11, 1);
                 break;
 
-            case RED_WAREHOUSE:
+            case 3://red warehouse w/ freight
                 moveForward(7, 1);
                 waitForDriveMotors();
                 liftArm(140, 0.5);
@@ -207,8 +282,17 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 waitForDriveMotors();
                 moveRotate(180,0.5);
                 break;
-
-            case BLUE_DUCK:
+            case 4://red warehouse no freight
+                moveForward(-12,1);
+                waitForDriveMotors();
+                moveSideways(-19, 1);
+                waitForDriveMotors();
+                liftArm(30, 1);
+                moveForward(-55, 1);
+                waitForDriveMotors();
+                liftArm(-30, 1);
+                break;
+            /*case 5://blue duck w/ freight
                 moveSideways(5, 1);
                 waitForDriveMotors();
                 moveForward(4, 1);
@@ -220,12 +304,28 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 waitForDriveMotors();
                 moveSideways(-6, 1);
                 waitForDriveMotors();
-                moveSideways(35, 1);
+                moveSideways(31.5, 0.2);
                 waitForDriveMotors();
-                moveForward(8, 1);
+                moveForward(10, 0.2);
+                break;*/
+            case 6://blue duck no freight
+                moveSideways(5, 1);
+                waitForDriveMotors();
+                moveForward(4, 1);
+                waitForDriveMotors();
+                spinnerBlue(0.5);
+                sleep(2500);
+                spinnerEnd();
+                moveForward(-5, 1);
+                waitForDriveMotors();
+                moveSideways(-6, 1);
+                waitForDriveMotors();
+                moveSideways(31.5, 0.2);
+                waitForDriveMotors();
+                moveForward(10, 0.2);
                 break;
 
-            case BLUE_WAREHOUSE:
+            case 8://blue warehouse no freight
                 liftArm(30, 1);
                 waitForDriveMotors();
                 moveForward(-27, 1);
