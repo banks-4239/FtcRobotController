@@ -13,29 +13,29 @@ import com.qualcomm.robotcore.util.Range;
 public class Test_Op extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor arm = null;
+    private DcMotor robotArm = null;
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        arm  = hardwareMap.get(DcMotor.class, "arm");
+        robotArm  = hardwareMap.get(DcMotor.class, "ra");
 
-        arm.setTargetPosition(arm.getCurrentPosition());
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robotArm.setTargetPosition(robotArm.getCurrentPosition());
+        robotArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm.setTargetPosition(1000);
+        robotArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robotArm.setTargetPosition(1000);
 
         waitForStart();
         runtime.reset();
 
         while (opModeIsActive()) {
 
-            arm.setPower(1);
+            robotArm.setPower(1);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
         }
