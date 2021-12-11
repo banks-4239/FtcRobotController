@@ -69,6 +69,11 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     int onSetting = 1;
 
+    static int LIFT_3 = 1940;
+    static int LIFT_2 = 2130;
+    static int LIFT_1 = 330;
+    static int LIFT_0 = 50;
+
     boolean settingButtonDown1 = false;
     boolean settingButtonDown2 = false;
 
@@ -143,13 +148,15 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
             telemetry.addData("Please choose a setting", "");
             if(redOrBlue){
-                telemetry.addData("Red", "");
+                telemetry.addData("Red",settings[onSetting - 1]);
+                telemetry.addData("Red",">" + settings[onSetting]);
+                telemetry.addData("Red",settings[onSetting + 1]);
             }else{
-                telemetry.addData("Blue", "");
+                telemetry.addData("Blue",settings[onSetting - 1]);
+                telemetry.addData("Blue",">" + settings[onSetting]);
+                telemetry.addData("Blue",settings[onSetting + 1]);
             }
-            telemetry.addData("",settings[onSetting - 1]);
-            telemetry.addData("",">" + settings[onSetting]);
-            telemetry.addData("",settings[onSetting + 1]);
+
             telemetry.update();
             if (gamepad1.dpad_up) {
                 if(onSetting > 1 && settingButtonDown1 == false){
@@ -218,7 +225,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 moveSideways(-8, 1);
                 waitForDriveMotors();
                 spinnerRed(0.2);
-                sleep(4500);
+                sleep(6000);
                 spinnerEnd();
                 moveSideways(8, 1);
                 waitForDriveMotors();
@@ -250,8 +257,8 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 waitForDriveMotors();
                 moveSideways(-8, 1);
                 waitForDriveMotors();
-                spinnerRed(0.5);
-                sleep(2500);
+                spinnerRed(0.2);
+                sleep(6000);
                 spinnerEnd();
                 moveSideways(8, 1);
                 waitForDriveMotors();
@@ -283,58 +290,71 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 moveRotate(180,0.5);
                 break;
             case 4://red warehouse no freight
-                moveForward(-12,1);
+                liftArm(10, 1);
+                moveForward(-25,1);
                 waitForDriveMotors();
                 moveSideways(-19, 1);
                 waitForDriveMotors();
-                liftArm(30, 1);
-                moveForward(-55, 1);
+                moveForward(-45, 1);
                 waitForDriveMotors();
-                liftArm(-30, 1);
+                liftArm(-10, 1);
                 break;
-            /*case 5://blue duck w/ freight
-                moveSideways(5, 1);
+            case 5://blue duck w/ freight (unfinished)
+                moveSideways(4.75, 1);
                 waitForDriveMotors();
-                moveForward(4, 1);
+                moveForward(5, 1);
                 waitForDriveMotors();
-                spinnerBlue(0.5);
-                sleep(2500);
+                spinnerBlue(0.3);
+                sleep(4000);
                 spinnerEnd();
                 moveForward(-5, 1);
                 waitForDriveMotors();
                 moveSideways(-6, 1);
+                waitForDriveMotorsFast();
+                moveForward(-33, 1);
                 waitForDriveMotors();
-                moveSideways(31.5, 0.2);
+                moveSideways(20, 1);
                 waitForDriveMotors();
-                moveForward(10, 0.2);
-                break;*/
+                moveRotate(-90,1);
+                waitForDriveMotors();
+                moveSideways(10, 0.5);
+                waitForDriveMotors();
+                moveForward(7, 0.5);
+                waitForDriveMotors();
+                liftArm(LIFT_3,0.5);
+                sleep(3000);
+                liftArm(-LIFT_3,0.5);
+                sleep(3000);
+                moveSideways(-60, 1);
+                waitForDriveMotors();
+                break;
             case 6://blue duck no freight
-                moveSideways(5, 1);
+                moveSideways(4.75, 1);
                 waitForDriveMotors();
-                moveForward(4, 1);
+                moveForward(5, 1);
                 waitForDriveMotors();
-                spinnerBlue(0.5);
-                sleep(2500);
+                spinnerBlue(0.2);
+                sleep(6000);
                 spinnerEnd();
-                moveForward(-5, 1);
+                moveForward(-6.5, 1);
                 waitForDriveMotors();
                 moveSideways(-6, 1);
                 waitForDriveMotors();
-                moveSideways(31.5, 0.2);
+                moveSideways(31, 1);
                 waitForDriveMotors();
-                moveForward(10, 0.2);
+                moveForward(14, 1);
                 break;
 
             case 8://blue warehouse no freight
-                liftArm(30, 1);
+                liftArm(10, 1);
                 waitForDriveMotors();
-                moveForward(-27, 1);
+                moveForward(-25, 1);
                 waitForDriveMotors();
                 moveSideways(19, 1);
                 waitForDriveMotors();
                 moveForward(-45, 1);
                 waitForDriveMotors();
-                liftArm(-30, 1);
+                liftArm(-10, 1);
                 break;
 
         }
@@ -343,14 +363,6 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
         while (opModeIsActive()) {
         }
-        // leftFrontDrive.setPower((moveY + rotate + moveX) / 2);
-        // rightFrontDrive.setPower((moveY - rotate - moveX) / 2);
-        // rightBackDrive.setPower((0 - moveY - rotate + moveX) / 2);
-        // leftBackDrive.setPower((0 - moveY + rotate - moveX) / 2);
-
-
-        //spinner.setPower(rSpin - lSpin);
-
 
     }
 
@@ -383,10 +395,10 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     }
 
-    public void liftArm(int degrees, double speed) {
+    public void liftArm(int ticks, double speed) {
 
         robotArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robotArm.setTargetPosition(inchestoticks(degrees * ticksperdegree));
+        robotArm.setTargetPosition(ticks);
 
 
         robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -486,6 +498,16 @@ public class BasicOpMode_Auto extends LinearOpMode {
     public void waitForDriveMotors() {
 
         while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() || leftBackDrive.isBusy() || rightBackDrive.isBusy()) {
+            telemetry.update();
+        }
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+    }
+    public void waitForDriveMotorsFast() {
+
+        while (leftFrontDrive.isBusy() && rightFrontDrive.isBusy() && leftBackDrive.isBusy() && rightBackDrive.isBusy()) {
             telemetry.update();
         }
         leftFrontDrive.setPower(0);
