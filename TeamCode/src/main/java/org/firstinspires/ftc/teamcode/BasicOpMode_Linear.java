@@ -27,6 +27,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+//here ya go DAVID i did it i did the thing i forgor :skull: what i did xd but it sure was something :D
+
 package org.firstinspires.ftc.teamcode;
 
 import android.widget.Button;
@@ -87,6 +89,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     double wheeldiameter = 100;
     double pi = 3.1415;
 
+    static int LIFT_5 = 1850;
     static int LIFT_4 = 1200;
     static int LIFT_3 = 550;
     static int LIFT_2 = 330;
@@ -174,26 +177,12 @@ public class BasicOpMode_Linear extends LinearOpMode {
             boolean lift2 = gamepad2.dpad_right;
             boolean lift3 = gamepad2.dpad_up;
             boolean lift4 = gamepad2.back;
+            boolean lift5 = gamepad2.b;
 
 
 
 
-            if((gamepad1.start || gamepad2.start) && switchingConts == 0){
-                switchingConts = 1;
-                activeGamepad1 = gamepad1;
-                activeGamepad2 = gamepad2;
-            }
-            if(!(gamepad1.start || gamepad2.start)  && switchingConts == 1){
-                switchingConts = 2;
-            }
-            if((gamepad1.start || gamepad2.start) && switchingConts == 2){
-                switchingConts = 3;
-                activeGamepad1 = gamepad2;
-                activeGamepad2 = gamepad1;
-            }
-            if(!(gamepad1.start || gamepad2.start) && switchingConts == 3){
-                switchingConts = 0;
-            }
+
 
 
 
@@ -295,9 +284,15 @@ public class BasicOpMode_Linear extends LinearOpMode {
                     robotArm.setPower(0.5);
 
                 }
-                if(gamepad2 .a && robotArm.getCurrentPosition() > 1100){
+                if(lift5){
+                    robotArm.setTargetPosition(LIFT_5);
+                    robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robotArm.setPower(0.5);
+
+                }
+                if(gamepad2.a && robotArm.getCurrentPosition() > 1100){
                     readyToCap = false;
-                    robotArm.setTargetPosition(1850);
+                    robotArm.setTargetPosition(LIFT_5);
                     robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     robotArm.setPower(0.1);
                 }
