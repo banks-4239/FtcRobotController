@@ -89,12 +89,15 @@ public class BasicOpMode_Linear extends LinearOpMode {
     double wheeldiameter = 100;
     double pi = 3.1415;
 
-    static int LIFT_5 = 1850;
-    static int LIFT_4 = 1200;
-    static int LIFT_3 = 550;
-    static int LIFT_2 = 330;
-    static int LIFT_1 = 120;
+    // 2.87
+    static int LIFT_5 = 5309; // 1850;
+    static int LIFT_4 = 3444; // 1200;
+    static int LIFT_3 = 1578; // 550;
+    static int LIFT_2 = 947;  // 330;
+    static int LIFT_1 = 344;  // 120;
     static int LIFT_0 = 00;
+
+    static final double LIFT_ARM_ROTATE_PWR = 1;
 
     @Override
     public void runOpMode() {
@@ -123,9 +126,6 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         armButton.setMode(DigitalChannel.Mode.INPUT);
 
-
-
-
         boolean facingFront = true;
         int toggled = 0;
 
@@ -137,21 +137,14 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         boolean readyToCap = false;
 
-
         boolean cutscene = false;
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-
-        while(!armButton.getState()){
+        while (!armButton.getState()) {
             robotArm.setPower(-0.2);
         }
 
         activeGamepad1 = gamepad1;
         activeGamepad2 = gamepad2;
-
-
-
 
         robotArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -161,8 +154,6 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-
             // Setup a variable for each drive wheel to save power level for telemetry
             double moveX = activeGamepad1.left_stick_x;
             double moveY = activeGamepad1.left_stick_y;
@@ -179,16 +170,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
             boolean lift4 = gamepad2.back;
             boolean lift5 = gamepad2.b;
 
-
-
-
-
-
-
-
             double rotate = activeGamepad1.right_stick_x;
 
-            boolean fast = activeGamepad1.right_stick_button ;
+            boolean fast = activeGamepad1.right_stick_button;
 
             boolean takingIn = activeGamepad1.a;
             boolean takingOut = activeGamepad1.b;
@@ -200,37 +184,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             boolean armMoving;
 
-
-
-                    // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            //double drive = -activeGamepad1.left_stick_y;
-            //double turn  =  activeGamepad1.right_stick_x;
-            //leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            //rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -activeGamepad1.left_stick_y ;
-            // rightPower = -activeGamepad1.right_stick_y ;
-
-            // Send calculated power to wheels
-
-            if(!cutscene) {
-                /*if (armButton.getState() == true) {
-                    telemetry.addData("Digital Touch", "Is Not Pressed");
-                } else {
-                    telemetry.addData("Digital Touch", "Is Pressed");
-                }*/
-
-
-                if(activeGamepad1.back){
+            if (!cutscene) {
+                if (activeGamepad1.back) {
                     cutscene = true;
                 }
-
 
                 if (facingFront) {
                     if (fast) {
@@ -258,82 +215,87 @@ public class BasicOpMode_Linear extends LinearOpMode {
                     }
                 }
 
-                if(lift0){
+                if (lift0) {
                     robotArm.setTargetPosition(LIFT_0);
                     robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robotArm.setPower(0.5);
+                    robotArm.setPower(LIFT_ARM_ROTATE_PWR);
                 }
-                if(lift1){
+
+                if (lift1) {
                     robotArm.setTargetPosition(LIFT_1);
                     robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robotArm.setPower(0.5);
+                    robotArm.setPower(LIFT_ARM_ROTATE_PWR);
                 }
-                if(lift2){
+
+                if (lift2) {
                     robotArm.setTargetPosition(LIFT_2);
                     robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robotArm.setPower(0.5);
+                    robotArm.setPower(LIFT_ARM_ROTATE_PWR);
                 }
-                if(lift3){
+
+                if (lift3) {
                     robotArm.setTargetPosition(LIFT_3);
                     robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robotArm.setPower(0.5);
+                    robotArm.setPower(LIFT_ARM_ROTATE_PWR);
                 }
-                if(lift4){
+
+                if (lift4) {
                     robotArm.setTargetPosition(LIFT_4);
                     robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robotArm.setPower(0.5);
+                    robotArm.setPower(LIFT_ARM_ROTATE_PWR);
 
                 }
-                if(lift5){
+
+                if (lift5) {
                     robotArm.setTargetPosition(LIFT_5);
                     robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robotArm.setPower(0.5);
+                    robotArm.setPower(LIFT_ARM_ROTATE_PWR);
 
                 }
-                if(gamepad2.a && robotArm.getCurrentPosition() > 1100){
+
+                if (gamepad2.a && robotArm.getCurrentPosition() > 3157) { // 1100) {
                     readyToCap = false;
                     robotArm.setTargetPosition(LIFT_5);
                     robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robotArm.setPower(0.1);
+                    robotArm.setPower(0.5);
                 }
 
-
-
-
-                if(activeGamepad1.start){
+                if (activeGamepad1.start) {
                     rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 }
 
-
                 if (toggleButton == true && toggled == 0) {
                     toggled = 1;
                     facingFront = false;
                 }
+
                 if (toggleButton == false && toggled == 1) {
                     toggled = 2;
                 }
+
                 if (toggleButton == true && toggled == 2) {
                     toggled = 3;
                     facingFront = true;
                 }
+
                 if (toggleButton == false && toggled == 3) {
                     toggled = 0;
                 }
 
-
                 if (takingIn) {
                     intake.setPower(1);
                 }
+
                 if (takingOut) {
                     intake.setPower(-1);
                 }
+
                 if ((takingOut == false) && (takingIn == false)) {
                     intake.setPower(0);
                 }
-
 
                 /*
                 cap:1940
@@ -343,15 +305,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 layer 1: 330
                 */
 
-
-                telemetry.addData("FRONT LEFT", leftFrontDrive.getCurrentPosition());
-                telemetry.addData("FRONT RIGHT", rightFrontDrive.getCurrentPosition());
-                telemetry.addData("BACK LEFT", leftBackDrive.getCurrentPosition());
-                telemetry.addData("BACK RIGHT", rightBackDrive.getCurrentPosition());
-                //telemetry.addData("armPosition", robotArm.getCurrentPosition());
-
-
-
+                // telemetry.addData("FRONT LEFT", leftFrontDrive.getCurrentPosition());
+                // telemetry.addData("FRONT RIGHT", rightFrontDrive.getCurrentPosition());
+                // telemetry.addData("BACK LEFT", leftBackDrive.getCurrentPosition());
+                // telemetry.addData("BACK RIGHT", rightBackDrive.getCurrentPosition());
+                telemetry.addData("armPosition", robotArm.getCurrentPosition());
 
                 if (spinLeft) {
                     spinner.setPower(0.5);
@@ -362,7 +320,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
                         spinner.setPower(0);
                     }
                 }
-/* on comment indefinetly
+                /* on comment indefinetly
                 if (armUp > 0.3) {
                     robotArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     robotArm.setPower(0.5);
@@ -380,45 +338,34 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 }*/
 
 
-            }else{
+            } else {
                 //enter coding here
                 telemetry.update();
 
-                moveWheels(0,1800,1500,100,1);
-                moveWheels(500,500,500,500,1);
-                moveWheels(-1900,0,100,-1600,1);
+                moveWheels(0, 1800, 1500, 100, 1);
+                moveWheels(500, 500, 500, 500, 1);
+                moveWheels(-1900, 0, 100, -1600, 1);
 
                 //stop coding here
-
-
                 leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-
                 cutscene = false;
             }
 
-
-
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("", toggled);
-            //telemetry.addData("Spinner", "left (%.2f)", activeGamepad1.right_trigger);
+            // telemetry.addData("", toggled);
+            // telemetry.addData("Spinner", "left (%.2f)", activeGamepad1.right_trigger);
             telemetry.update();
-
-
         }
     }
 
 
-    void moveWheels(int FL,int FR, int BR, int BL,double speed){
-
-
+    void moveWheels(int FL, int FR, int BR, int BL, double speed) {
         int max = absMax(absMax(FL, FR), absMax(BL, BR));
-
 
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -436,17 +383,14 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftFrontDrive.setPower(speed);
-        rightFrontDrive.setPower(speed );
-        leftBackDrive.setPower(speed );
+        rightFrontDrive.setPower(speed);
+        leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
 
         sleep(3000);
-
-
     }
 
-    int absMax(int a, int b){
-        return(java.lang.Math.max(java.lang.Math.abs(a),java.lang.Math.abs(b)));
+    int absMax(int a, int b) {
+        return (java.lang.Math.max(java.lang.Math.abs(a), java.lang.Math.abs(b)));
     }
-
 }

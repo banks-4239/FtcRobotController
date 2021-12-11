@@ -69,10 +69,10 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     int onSetting = 1;
 
-    static int LIFT_3 = 1940;
-    static int LIFT_2 = 2130;
-    static int LIFT_1 = 330;
-    static int LIFT_0 = 50;
+    static int LIFT_3 = 5567; // 1940;
+    static int LIFT_2 = 6113; // 2130;
+    static int LIFT_1 = 947;  // 330;
+    static int LIFT_0 = 0;    // 50;
 
     boolean settingButtonDown1 = false;
     boolean settingButtonDown2 = false;
@@ -81,6 +81,10 @@ public class BasicOpMode_Auto extends LinearOpMode {
     double ticksperdegree = 1.06805555556;
     double wheeldiameter = 100;
     double pi = 3.1415;
+    
+    static final double SPINNER_SPEED = .3;
+    
+    static final double LIFT_ARM_ROTATE_PWR = 1;
 
     boolean redOrBlue = true;
 
@@ -91,9 +95,6 @@ public class BasicOpMode_Auto extends LinearOpMode {
             "Warehouse Freight",
             "Warehouse No Freight",
             ""};
-
-
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -123,7 +124,6 @@ public class BasicOpMode_Auto extends LinearOpMode {
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robotArm.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
 
@@ -133,63 +133,55 @@ public class BasicOpMode_Auto extends LinearOpMode {
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robotArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-
         telemetry.addData("Please choose a mode!", "up - redDuck, right - redWarehouse, left - blueDuck, down - blueWarehouse");
         telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
-
-        while (choosingAuto == false) {
-
-
-
+        while (!choosingAuto) {
             telemetry.addData("Please choose a setting", "");
-            if(redOrBlue){
-                telemetry.addData("Red",settings[onSetting - 1]);
-                telemetry.addData("Red",">" + settings[onSetting]);
-                telemetry.addData("Red",settings[onSetting + 1]);
-            }else{
-                telemetry.addData("Blue",settings[onSetting - 1]);
-                telemetry.addData("Blue",">" + settings[onSetting]);
-                telemetry.addData("Blue",settings[onSetting + 1]);
+            if (redOrBlue) {
+                telemetry.addData("Red", settings[onSetting - 1]);
+                telemetry.addData("Red", ">" + settings[onSetting]);
+                telemetry.addData("Red", settings[onSetting + 1]);
+            } else {
+                telemetry.addData("Blue", settings[onSetting - 1]);
+                telemetry.addData("Blue", ">" + settings[onSetting]);
+                telemetry.addData("Blue", settings[onSetting + 1]);
             }
 
             telemetry.update();
             if (gamepad1.dpad_up) {
-                if(onSetting > 1 && settingButtonDown1 == false){
+                if (onSetting > 1 && !settingButtonDown1) {
                     onSetting--;
                 }
                 settingButtonDown1 = true;
-            }else{
+            } else {
                 settingButtonDown1 = false;
             }
+
             if (gamepad1.dpad_down) {
-                if(onSetting < 4 && settingButtonDown2 == false){
+                if (onSetting < 4 && !settingButtonDown2) {
                     onSetting++;
                 }
                 settingButtonDown2 = true;
-            }else{
+            } else {
                 settingButtonDown2 = false;
             }
-            if(gamepad1.left_bumper){
+
+            if (gamepad1.left_bumper) {
                 redOrBlue = true;
-            }else if(gamepad1.right_bumper){
+            } else if (gamepad1.right_bumper) {
                 redOrBlue = false;
             }
-            if(isStarted()){
-                if(redOrBlue){
+
+            if (isStarted()) {
+                if (redOrBlue) {
                     choosingAuto = true;
                     autoMode = onSetting;
-                }else{
+                } else {
                     choosingAuto = true;
                     autoMode = onSetting + 4;
                 }
             }
-
-
         }
 /*
         telemetry.clearAll();
@@ -200,13 +192,9 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 leftBackDrive.getCurrentPosition());
         telemetry.update();
 */
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
-
-
-        // Setup a variable for each drive wheel to save power level for telemetry
 
         telemetry.addData("DcMotors", "Starting at %7d :%7d :%7d :%7d",
                 rightFrontDrive.getCurrentPosition(),
@@ -216,154 +204,180 @@ public class BasicOpMode_Auto extends LinearOpMode {
         //spinner.getCurrentPosition());
         telemetry.update();
 
-
-        //enter autonomous scripting here//////////////////////////////////////////////////////////////////////////////////////////
+        //enter autonomous code here//////////////////////////////////////////////////////////////////////////////////////////
         switch (autoMode) {
-            case 1://red duck w/ freight
-                moveForward(-5, 1);
-                waitForDriveMotors();
-                moveSideways(-8, 1);
-                waitForDriveMotors();
-                spinnerRed(0.2);
-                sleep(6000);
-                spinnerEnd();
-                moveSideways(8, 1);
-                waitForDriveMotors();
-                moveForward(7, 1);
-                waitForDriveMotors();
-                moveForward(-35, 1);//
-                waitForDriveMotors();
-                moveRotate(-90, 1);
-                waitForDriveMotors();
-                moveForward(25,1);
-                liftArm(160,0.5);
-                sleep(1500);
-                takeOut(1);
-                sleep(3000);
-                intakeOff();
-                liftArm(-40,0.5);
-                sleep(1500);
-                moveForward(-25,1);
-                waitForDriveMotors();
-                moveRotate(90, 1);
-                waitForDriveMotors();
-                moveForward(20,1);
-                waitForDriveMotors();
-                moveSideways(-5,1);
+            case 1:
+                redDuckWithFreight();
                 break;
-
-            case 2://red duck no freight
-                moveForward(-5, 1);
-                waitForDriveMotors();
-                moveSideways(-8, 1);
-                waitForDriveMotors();
-                spinnerRed(0.2);
-                sleep(6000);
-                spinnerEnd();
-                moveSideways(8, 1);
-                waitForDriveMotors();
-                moveForward(6, 1);
-                waitForDriveMotors();
-                moveForward(-24.5, 1);
-                waitForDriveMotors();
-                moveSideways(-11, 1);
+            case 2:
+                redDuckWithNoFreight();
                 break;
-
-            case 3://red warehouse w/ freight
-                moveForward(7, 1);
-                waitForDriveMotors();
-                liftArm(140, 0.5);
-                sleep(5000);
-                moveForward(10, 1);
-                waitForDriveMotors();
-                takeOut(1);
-                sleep(1000);
-                intakeOff();
-                liftArm(-100, 0.5);
-                sleep(8000);
-                moveRotate(90,1);
-                waitForDriveMotors();
-                moveForward(65,1);
-                liftArm(-40, 0.5);
-                sleep(2000);
-                waitForDriveMotors();
-                moveRotate(180,0.5);
+            case 3:
+                redWarehouseWithFreight();
                 break;
-            case 4://red warehouse no freight
-                liftArm(10, 1);
-                moveForward(-25,1);
-                waitForDriveMotors();
-                moveSideways(-19, 1);
-                waitForDriveMotors();
-                moveForward(-45, 1);
-                waitForDriveMotors();
-                liftArm(-10, 1);
+            case 4:
+                redWarehouseWithNoFreight();
                 break;
-            case 5://blue duck w/ freight (unfinished)
-                moveSideways(4.75, 1);
-                waitForDriveMotors();
-                moveForward(5, 1);
-                waitForDriveMotors();
-                spinnerBlue(0.3);
-                sleep(4000);
-                spinnerEnd();
-                moveForward(-5, 1);
-                waitForDriveMotors();
-                moveSideways(-6, 1);
-                waitForDriveMotorsFast();
-                moveForward(-33, 1);
-                waitForDriveMotors();
-                moveSideways(20, 1);
-                waitForDriveMotors();
-                moveRotate(-90,1);
-                waitForDriveMotors();
-                moveSideways(10, 0.5);
-                waitForDriveMotors();
-                moveForward(7, 0.5);
-                waitForDriveMotors();
-                liftArm(LIFT_3,0.5);
-                sleep(3000);
-                liftArm(-LIFT_3,0.5);
-                sleep(3000);
-                moveSideways(-60, 1);
-                waitForDriveMotors();
+            case 5:
+                blueDuckWithFreight();
                 break;
-            case 6://blue duck no freight
-                moveSideways(4.75, 1);
-                waitForDriveMotors();
-                moveForward(5, 1);
-                waitForDriveMotors();
-                spinnerBlue(0.2);
-                sleep(6000);
-                spinnerEnd();
-                moveForward(-6.5, 1);
-                waitForDriveMotors();
-                moveSideways(-6, 1);
-                waitForDriveMotors();
-                moveSideways(31, 1);
-                waitForDriveMotors();
-                moveForward(14, 1);
+            case 6:
+                blueDuckWithNoFreight();
                 break;
-
-            case 8://blue warehouse no freight
-                liftArm(10, 1);
-                waitForDriveMotors();
-                moveForward(-25, 1);
-                waitForDriveMotors();
-                moveSideways(19, 1);
-                waitForDriveMotors();
-                moveForward(-45, 1);
-                waitForDriveMotors();
-                liftArm(-10, 1);
+            case 7:
+                blueWarehouseWithFreight();
                 break;
-
+            case 8:
+                blueWarehouseWithNoFreight();
+                break;
         }
 
-        //end autonomous scripting here////////////////////////////////////////////////////////////////////////////////////////////
+        while(opModeIsActive());
+    }
 
-        while (opModeIsActive()) {
-        }
+    public void redDuckWithFreight() {
+        moveForward(-5, 1);
+        waitForDriveMotors();
+        moveSideways(-8, 1);
+        waitForDriveMotors();
+        spinnerRed(SPINNER_SPEED);
+        sleep(6000);
+        spinnerEnd();
+        moveSideways(8, 1);
+        waitForDriveMotors();
+        moveForward(7, 1);
+        waitForDriveMotors();
+        moveForward(-35, 1);//
+        waitForDriveMotors();
+        moveRotate(-90, 1);
+        waitForDriveMotors();
+        moveForward(25, 1);
+        liftArm(459, LIFT_ARM_ROTATE_PWR); // was 160
+        sleep(1500);
+        takeOut(1);
+        sleep(3000);
+        intakeOff();
+        liftArm(-115, LIFT_ARM_ROTATE_PWR); // was -40
+        sleep(1500);
+        moveForward(-25, 1);
+        waitForDriveMotors();
+        moveRotate(90, 1);
+        waitForDriveMotors();
+        moveForward(20, 1);
+        waitForDriveMotors();
+        moveSideways(-5, 1);
+    }
 
+    public void redDuckWithNoFreight() {
+        moveForward(-5, 1);
+        waitForDriveMotors();
+        moveSideways(-8, 1);
+        waitForDriveMotors();
+        spinnerRed(SPINNER_SPEED);
+        sleep(6000);
+        spinnerEnd();
+        moveSideways(8, 1);
+        waitForDriveMotors();
+        moveForward(6, 1);
+        waitForDriveMotors();
+        moveForward(-24.5, 1);
+        waitForDriveMotors();
+        moveSideways(-11, 1);
+    }
+
+    public void redWarehouseWithFreight() {
+        moveForward(7, 1);
+        waitForDriveMotors();
+        liftArm(401, LIFT_ARM_ROTATE_PWR); // 140
+        sleep(5000);
+        moveForward(10, 1);
+        waitForDriveMotors();
+        takeOut(1);
+        sleep(1000);
+        intakeOff();
+        liftArm(-287, LIFT_ARM_ROTATE_PWR); // -100
+        sleep(8000);
+        moveRotate(90, 1);
+        waitForDriveMotors();
+        moveForward(65, 1);
+        liftArm(-114, LIFT_ARM_ROTATE_PWR); // -40
+        sleep(2000);
+        waitForDriveMotors();
+        moveRotate(180, 0.5);
+    }
+
+    public void redWarehouseWithNoFreight() {
+        liftArm(29, LIFT_ARM_ROTATE_PWR); // was 10
+        moveForward(-25, 1);
+        waitForDriveMotors();
+        moveSideways(-19, 1);
+        waitForDriveMotors();
+        moveForward(-45, 1);
+        waitForDriveMotors();
+        liftArm(-29, LIFT_ARM_ROTATE_PWR); // was -10
+    }
+
+    public void blueDuckWithFreight() { // unfinished
+        moveSideways(4.75, 1);
+        waitForDriveMotors();
+        moveForward(5, 1);
+        waitForDriveMotors();
+        spinnerBlue(SPINNER_SPEED);
+        sleep(4000);
+        spinnerEnd();
+        moveForward(-5, 1);
+        waitForDriveMotors();
+        moveSideways(-6, 1);
+        waitForDriveMotorsFast();
+        moveForward(-33, 1);
+        waitForDriveMotors();
+        moveSideways(20, 1);
+        waitForDriveMotors();
+        moveRotate(-90, 1);
+        waitForDriveMotors();
+        moveSideways(10, 0.5);
+        waitForDriveMotors();
+        moveForward(7, 0.5);
+        waitForDriveMotors();
+        liftArm(LIFT_3, LIFT_ARM_ROTATE_PWR);
+        sleep(3000);
+        liftArm(-LIFT_3, LIFT_ARM_ROTATE_PWR);
+        sleep(3000);
+        moveSideways(-60, 1);
+        waitForDriveMotors();
+    }
+
+    public void blueDuckWithNoFreight() {
+        moveSideways(4.75, 1);
+        waitForDriveMotors();
+        moveForward(5, 1);
+        waitForDriveMotors();
+        spinnerBlue(SPINNER_SPEED);
+        sleep(6000);
+        spinnerEnd();
+        moveForward(-6.5, 1);
+        waitForDriveMotors();
+        moveSideways(-6, 1);
+        waitForDriveMotors();
+        moveSideways(31, 1);
+        waitForDriveMotors();
+        moveForward(14, 1);
+    }
+
+    public void blueWarehouseWithFreight() {
+
+    }
+
+    public void blueWarehouseWithNoFreight() {
+        liftArm(29, LIFT_ARM_ROTATE_PWR); // was 10
+        waitForDriveMotors();
+        moveForward(-25, 1);
+        waitForDriveMotors();
+        moveSideways(19, 1);
+        waitForDriveMotors();
+        moveForward(-45, 1);
+        waitForDriveMotors();
+        liftArm(-29, LIFT_ARM_ROTATE_PWR); // was -10
     }
 
 
@@ -372,7 +386,6 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void moveForward(double inches, double speed) {
-
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -392,22 +405,17 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightFrontDrive.setPower(speed);
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
-
     }
 
-    public void liftArm(int ticks, double speed) {
-
+    public void liftArm(int ticks, double power) {
         robotArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robotArm.setTargetPosition(ticks);
 
-
         robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robotArm.setPower(speed);
-
+        robotArm.setPower(power);
     }
 
     public void moveRotate(int degrees, double speed) {
-
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -427,11 +435,9 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightFrontDrive.setPower(speed);
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
-
-
     }
 
-    public void moveDiagonal(double inches, double speed) {//WORK IN PROGRESS
+    public void moveDiagonal(double inches, double speed) { //WORK IN PROGRESS
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -453,9 +459,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightBackDrive.setPower(speed);
     }
 
-
     public void moveSideways(double inches, double speed) {
-
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -475,20 +479,14 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rightFrontDrive.setPower(speed);
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
-
-
     }
 
     public void takeIn(double speed) {
-
         intake.setPower(-speed);
-
     }
 
     public void takeOut(double speed) {
-
         intake.setPower(speed);
-
     }
 
     void intakeOff() {
@@ -496,20 +494,21 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void waitForDriveMotors() {
-
         while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() || leftBackDrive.isBusy() || rightBackDrive.isBusy()) {
             telemetry.update();
         }
+        
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
     }
-    public void waitForDriveMotorsFast() {
 
+    public void waitForDriveMotorsFast() {
         while (leftFrontDrive.isBusy() && rightFrontDrive.isBusy() && leftBackDrive.isBusy() && rightBackDrive.isBusy()) {
             telemetry.update();
         }
+        
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
         leftBackDrive.setPower(0);
@@ -517,19 +516,13 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void waitForArm() {
-
-        while (robotArm.isBusy());
+        while (robotArm.isBusy())
         {
             telemetry.update();
         }
 
         robotArm.setPower(0);
-
-
     }
-
-
-
 
     public void spinnerBlue(double speed) {
         spinner.setPower(-speed);
@@ -542,5 +535,4 @@ public class BasicOpMode_Auto extends LinearOpMode {
     public void spinnerEnd() {
         spinner.setPower(0);
     }
-
 }
