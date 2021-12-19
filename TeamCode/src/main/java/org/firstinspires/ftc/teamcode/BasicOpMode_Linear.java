@@ -90,7 +90,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     double pi = 3.1415;
 
     // 2.87
-    static int LIFT_5 = 5309; // 1850;
+    static int LIFT_5 = 5500; // 1850;
     static int LIFT_4 = 3444; // 1200;
     static int LIFT_3 = 1578; // 550;
     static int LIFT_2 = 947;  // 330;
@@ -139,9 +139,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         boolean cutscene = false;
 
-        while (!armButton.getState()) {
-            robotArm.setPower(-0.2);
-        }
+
 
         activeGamepad1 = gamepad1;
         activeGamepad2 = gamepad2;
@@ -191,27 +189,27 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
                 if (facingFront) {
                     if (fast) {
-                        leftFrontDrive.setPower(moveY + rotate + moveX);
-                        rightFrontDrive.setPower(moveY - rotate - moveX);
-                        rightBackDrive.setPower(moveY - rotate + moveX);
-                        leftBackDrive.setPower(moveY + rotate - moveX);
+                        leftFrontDrive.setPower(moveY + rotate - moveX);
+                        rightFrontDrive.setPower(moveY - rotate + moveX);
+                        rightBackDrive.setPower(moveY - rotate - moveX);
+                        leftBackDrive.setPower(moveY + rotate + moveX);
                     } else {
-                        leftFrontDrive.setPower(((moveY / 2) + rotate + (moveX / 2)));
-                        rightFrontDrive.setPower(((moveY / 2) - rotate - (moveX / 2)));
-                        rightBackDrive.setPower(((moveY / 2) - rotate + (moveX / 2)));
-                        leftBackDrive.setPower(((moveY / 2) + rotate - (moveX / 2)));
+                        leftFrontDrive.setPower(((moveY / 2) + (rotate / 2) - (moveX / 2)));
+                        rightFrontDrive.setPower(((moveY / 2) - (rotate / 2) + (moveX / 2)));
+                        rightBackDrive.setPower(((moveY / 2) - (rotate / 2) - (moveX / 2)));
+                        leftBackDrive.setPower(((moveY / 2) + (rotate / 2) + (moveX / 2)));
                     }
                 } else {
                     if (fast) {
-                        leftFrontDrive.setPower(-moveY + rotate - moveX);
-                        rightFrontDrive.setPower(-moveY - rotate + moveX);
-                        rightBackDrive.setPower(-moveY - rotate - moveX);
-                        leftBackDrive.setPower(-moveY + rotate + moveX);
+                        leftFrontDrive.setPower(-moveY + rotate + moveX);
+                        rightFrontDrive.setPower(-moveY - rotate - moveX);
+                        rightBackDrive.setPower(-moveY - rotate + moveX);
+                        leftBackDrive.setPower(-moveY + rotate - moveX);
                     } else {
-                        leftFrontDrive.setPower((-(moveY / 2) + rotate - (moveX / 2)));
-                        rightFrontDrive.setPower((-(moveY / 2) - rotate + (moveX / 2)));
-                        rightBackDrive.setPower((-(moveY / 2) - rotate - (moveX / 2)));
-                        leftBackDrive.setPower((-(moveY / 2) + rotate + (moveX / 2)));
+                        leftFrontDrive.setPower((-(moveY / 2) + (rotate / 2) + (moveX / 2)));
+                        rightFrontDrive.setPower((-(moveY / 2) - (rotate / 2) - (moveX / 2)));
+                        rightBackDrive.setPower((-(moveY / 2) - (rotate / 2) + (moveX / 2)));
+                        leftBackDrive.setPower((-(moveY / 2) + (rotate / 2) - (moveX / 2)));
                     }
                 }
 
