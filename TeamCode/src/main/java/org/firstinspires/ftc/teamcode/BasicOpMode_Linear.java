@@ -194,10 +194,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
                         rightBackDrive.setPower(moveY - rotate - moveX);
                         leftBackDrive.setPower(moveY + rotate + moveX);
                     } else {
-                        leftFrontDrive.setPower(((moveY / 2) + (rotate / 2) - (moveX / 2)));
-                        rightFrontDrive.setPower(((moveY / 2) - (rotate / 2) + (moveX / 2)));
-                        rightBackDrive.setPower(((moveY / 2) - (rotate / 2) - (moveX / 2)));
-                        leftBackDrive.setPower(((moveY / 2) + (rotate / 2) + (moveX / 2)));
+                        leftFrontDrive.setPower(((moveY / 2) + (rotate / 1.5) - (moveX / 2)));
+                        rightFrontDrive.setPower(((moveY / 2) - (rotate / 1.5) + (moveX / 2)));
+                        rightBackDrive.setPower(((moveY / 2) - (rotate / 1.5) - (moveX / 2)));
+                        leftBackDrive.setPower(((moveY / 2) + (rotate / 1.5) + (moveX / 2)));
                     }
                 } else {
                     if (fast) {
@@ -206,10 +206,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
                         rightBackDrive.setPower(-moveY - rotate + moveX);
                         leftBackDrive.setPower(-moveY + rotate - moveX);
                     } else {
-                        leftFrontDrive.setPower((-(moveY / 2) + (rotate / 2) + (moveX / 2)));
-                        rightFrontDrive.setPower((-(moveY / 2) - (rotate / 2) - (moveX / 2)));
-                        rightBackDrive.setPower((-(moveY / 2) - (rotate / 2) + (moveX / 2)));
-                        leftBackDrive.setPower((-(moveY / 2) + (rotate / 2) - (moveX / 2)));
+                        leftFrontDrive.setPower((-(moveY / 2) + (rotate / 1.5) + (moveX / 2)));
+                        rightFrontDrive.setPower((-(moveY / 2) - (rotate / 1.5) - (moveX / 2)));
+                        rightBackDrive.setPower((-(moveY / 2) - (rotate / 1.5) + (moveX / 2)));
+                        leftBackDrive.setPower((-(moveY / 2) + (rotate / 1.5    ) - (moveX / 2)));
                     }
                 }
 

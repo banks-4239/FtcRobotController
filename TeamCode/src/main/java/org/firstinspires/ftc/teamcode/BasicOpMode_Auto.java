@@ -242,18 +242,18 @@ public class BasicOpMode_Auto extends LinearOpMode {
     public void redDuckWithFreight() {
         moveForward(5, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(8, MAX_SPEED);
+        moveRight(8, MAX_SPEED);
         waitForDriveMotors();
         spinnerRed(SPINNER_SPEED);
         sleep(SPIN_DURATION);
         spinnerEnd();
-        moveSideways(-8, MAX_SPEED);
+        moveRight(-8, MAX_SPEED);
         waitForDriveMotors();
         moveForward(7, MAX_SPEED);
         waitForDriveMotors();
         moveForward(-35, MAX_SPEED);//
         waitForDriveMotors();
-        moveRotate(-90, MAX_SPEED);
+        rotateRight(-90, MAX_SPEED);
         waitForDriveMotors();
         moveForward(25, MAX_SPEED);
         liftArm(459, LIFT_ARM_ROTATE_PWR); // was 160
@@ -265,28 +265,28 @@ public class BasicOpMode_Auto extends LinearOpMode {
         sleep(1500);
         moveForward(-25, MAX_SPEED);
         waitForDriveMotors();
-        moveRotate(90, MAX_SPEED);
+        rotateRight(90, MAX_SPEED);
         waitForDriveMotors();
         moveForward(20, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(5, MAX_SPEED);
+        moveRight(5, MAX_SPEED);
     }
 
     public void redDuckWithNoFreight() {
         moveForward(-5, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(8, MAX_SPEED);
+        moveRight(8, MAX_SPEED);
         waitForDriveMotors();
         spinnerRed(SPINNER_SPEED);
         sleep(SPIN_DURATION);
         spinnerEnd();
-        moveSideways(-8, MAX_SPEED);
+        moveRight(-8, MAX_SPEED);
         waitForDriveMotors();
         moveForward(6, MAX_SPEED);
         waitForDriveMotors();
         moveForward(-24.5, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(11, MAX_SPEED);
+        moveRight(11, MAX_SPEED);
     }
 
     public void redWarehouseWithFreight() {
@@ -301,30 +301,30 @@ public class BasicOpMode_Auto extends LinearOpMode {
         intakeOff();
         liftArm(-287, LIFT_ARM_ROTATE_PWR); // -100
         sleep(8000);
-        moveRotate(90, MAX_SPEED);
+        rotateRight(90, MAX_SPEED);
         waitForDriveMotors();
         moveForward(65, MAX_SPEED);
         liftArm(-114, LIFT_ARM_ROTATE_PWR); // -40
         sleep(2000);
         waitForDriveMotors();
-        moveRotate(180, MAX_SPEED / 2);
+        rotateRight(180, MAX_SPEED / 2);
     }
 
     public void redWarehouseWithNoFreight() {
 //        liftArm(29, LIFT_ARM_ROTATE_PWR); // was 10
         moveForward(-36, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(30, MAX_SPEED);
+        moveRight(30, MAX_SPEED);
         waitForDriveMotors();
-        moveRotate(-52, MAX_SPEED);
+        rotateRight(-52, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(-33, MAX_SPEED);
+        moveRight(-33, MAX_SPEED);
         waitForDriveMotors();
 //        liftArm(-29, LIFT_ARM_ROTATE_PWR); // was -10
     }
 
     public void blueDuckWithFreight() { // unfinished
-        moveSideways(-4.75, MAX_SPEED);
+        moveRight(-4.75, MAX_SPEED);
         waitForDriveMotors();
         moveForward(5, MAX_SPEED);
         waitForDriveMotors();
@@ -333,15 +333,15 @@ public class BasicOpMode_Auto extends LinearOpMode {
         spinnerEnd();
         moveForward(-5, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(6, MAX_SPEED);
+        moveRight(6, MAX_SPEED);
         waitForDriveMotorsFast();
         moveForward(-33, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(-20, MAX_SPEED);
+        moveRight(-20, MAX_SPEED);
         waitForDriveMotors();
-        moveRotate(-90, MAX_SPEED);
+        rotateRight(-90, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(-10, MAX_SPEED / 2);
+        moveRight(-10, MAX_SPEED / 2);
         waitForDriveMotors();
         moveForward(7, MAX_SPEED / 2);
         waitForDriveMotors();
@@ -349,12 +349,12 @@ public class BasicOpMode_Auto extends LinearOpMode {
         sleep(3000);
         liftArm(-LIFT_3, LIFT_ARM_ROTATE_PWR);
         sleep(3000);
-        moveSideways(60, MAX_SPEED);
+        moveRight(60, MAX_SPEED);
         waitForDriveMotors();
     }
 
     public void blueDuckWithNoFreight() {
-        moveSideways(-4.75, MAX_SPEED);
+        moveRight(-4.75, MAX_SPEED);
         waitForDriveMotors();
         moveForward(2.75, MAX_SPEED);
         waitForDriveMotors();
@@ -363,15 +363,15 @@ public class BasicOpMode_Auto extends LinearOpMode {
         spinnerEnd();
         moveForward(-6.5, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(6, MAX_SPEED);
+        moveRight(6, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(-33, MAX_SPEED);
+        moveRight(-33, MAX_SPEED);
         waitForDriveMotors();
         moveForward(18, MAX_SPEED);
     }
 
     public void blueWarehouseWithFreight() {
-
+        rotateRight(1800, MAX_SPEED);
     }
 
     public void blueWarehouseWithNoFreight() {
@@ -379,11 +379,11 @@ public class BasicOpMode_Auto extends LinearOpMode {
 //        waitForDriveMotors();
         moveForward(-36, MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(-30, MAX_SPEED);
+        moveRight(-30, MAX_SPEED);
         waitForDriveMotors();
-        moveRotate(52,MAX_SPEED);
+        rotateRight(52,MAX_SPEED);
         waitForDriveMotors();
-        moveSideways(33, MAX_SPEED);
+        moveRight(33, MAX_SPEED);
         waitForDriveMotors();
 //        liftArm(-29, LIFT_ARM_ROTATE_PWR); // was -10
     }
@@ -393,16 +393,20 @@ public class BasicOpMode_Auto extends LinearOpMode {
         return (int) Math.round((inches * ticksperrotation) / (mmperin * wheeldiameter * pi));
     }
 
+    public void moveBackward(double inches, double speed) {
+        moveForward(-inches, speed);
+    }
+
     public void moveForward(double inches, double speed) {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(inchestoticks(inches));
-        rightFrontDrive.setTargetPosition(inchestoticks(inches));
-        leftBackDrive.setTargetPosition(inchestoticks(inches));
-        rightBackDrive.setTargetPosition(inchestoticks(inches));
+        leftFrontDrive.setTargetPosition(inchestoticks(48*inches/46));
+        rightFrontDrive.setTargetPosition(inchestoticks(48*inches/46));
+        leftBackDrive.setTargetPosition(inchestoticks(48*inches/46));
+        rightBackDrive.setTargetPosition(inchestoticks(48*inches/46));
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -423,16 +427,16 @@ public class BasicOpMode_Auto extends LinearOpMode {
         robotArm.setPower(power);
     }
 
-    public void moveRotate(int degrees, double speed) {
+    public void rotateRight(int degrees, double speed) {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(degrees * 12);
-        rightFrontDrive.setTargetPosition(-degrees * 12);
-        leftBackDrive.setTargetPosition(degrees * 12);
-        rightBackDrive.setTargetPosition(-degrees * 12);
+        leftFrontDrive.setTargetPosition(degrees * 36/5);
+        rightFrontDrive.setTargetPosition(-degrees * 36/5);
+        leftBackDrive.setTargetPosition(degrees * 36/5);
+        rightBackDrive.setTargetPosition(-degrees * 36/5);
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -466,17 +470,19 @@ public class BasicOpMode_Auto extends LinearOpMode {
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
     }
-
-    public void moveSideways(double inches, double speed) {
+    public void moveLeft(double inches, double speed) {
+        moveRight(-inches, speed);
+    }
+    public void moveRight(double inches, double speed) {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(inchestoticks(inches));
-        rightFrontDrive.setTargetPosition(-inchestoticks(inches));
-        leftBackDrive.setTargetPosition(-inchestoticks(inches));
-        rightBackDrive.setTargetPosition(inchestoticks(inches));
+        leftFrontDrive.setTargetPosition(inchestoticks((48*48)*inches/(42*46.5)));
+        rightFrontDrive.setTargetPosition(-inchestoticks((48*48)*inches/(42*46.5)));
+        leftBackDrive.setTargetPosition(-inchestoticks((48*48)*inches/(42*46.5)));
+        rightBackDrive.setTargetPosition(inchestoticks((48*48)*inches/(42*46.5)));
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
