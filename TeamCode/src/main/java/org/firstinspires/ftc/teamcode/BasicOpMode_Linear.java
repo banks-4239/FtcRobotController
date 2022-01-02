@@ -90,7 +90,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     double pi = 3.1415;
 
     // 2.87
-    static int LIFT_5 = 5500; // 1850;
+    static int LIFT_5 = 5100; // 1850;
     static int LIFT_4 = 3444; // 1200;
     static int LIFT_3 = 1578; // 550;
     static int LIFT_2 = 947;  // 330;
