@@ -69,10 +69,12 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     int onSetting = 1;
 
-    static int LIFT_3 = 5567; // 1940;
-    static int LIFT_2 = 6113; // 2130;
-    static int LIFT_1 = 947;  // 330;
-    static int LIFT_0 = 0;    // 50;
+    static int LIFT_5 = 5100; // 1850;
+    static int LIFT_4 = 3444; // 1200;
+    static int LIFT_3 = 1578; // 550;
+    static int LIFT_2 = 947;  // 330;
+    static int LIFT_1 = 344;  // 120;
+    static int LIFT_0 = 00;
 
     boolean settingButtonDown1 = false;
     boolean settingButtonDown2 = false;
@@ -86,7 +88,9 @@ public class BasicOpMode_Auto extends LinearOpMode {
     
     static final double LIFT_ARM_ROTATE_PWR = 1;
 
-    static final double MAX_SPEED = 1 * .3;
+    static final double FAST = 1;
+    static final double MEDIUM = 1;
+    static final double SLOW = 0.3;
 
     static final long SPIN_DURATION = 3500;
 
@@ -135,7 +139,9 @@ public class BasicOpMode_Auto extends LinearOpMode {
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robotArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robotArm.setTargetPosition(0);
+        robotArm.setPower(1);
+        robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         telemetry.addData("Please choose a mode!", "up - redDuck, right - redWarehouse, left - blueDuck, down - blueWarehouse");
         telemetry.update();
@@ -240,22 +246,22 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void redDuckWithFreight() {
-        moveForward(5, MAX_SPEED);
+        moveForward(5, SLOW);
         waitForDriveMotors();
-        moveRight(8, MAX_SPEED);
+        moveRight(8, SLOW);
         waitForDriveMotors();
         spinnerRed(SPINNER_SPEED);
         sleep(SPIN_DURATION);
         spinnerEnd();
-        moveRight(-8, MAX_SPEED);
+        moveRight(-8, SLOW);
         waitForDriveMotors();
-        moveForward(7, MAX_SPEED);
+        moveForward(7, SLOW);
         waitForDriveMotors();
-        moveForward(-35, MAX_SPEED);//
+        moveForward(-35, SLOW);//
         waitForDriveMotors();
-        rotateRight(-90, MAX_SPEED);
+        rotateRight(-90, SLOW);
         waitForDriveMotors();
-        moveForward(25, MAX_SPEED);
+        moveForward(25, SLOW);
         liftArm(459, LIFT_ARM_ROTATE_PWR); // was 160
         sleep(1500);
         takeOut(1);
@@ -263,127 +269,136 @@ public class BasicOpMode_Auto extends LinearOpMode {
         intakeOff();
         liftArm(-115, LIFT_ARM_ROTATE_PWR); // was -40
         sleep(1500);
-        moveForward(-25, MAX_SPEED);
+        moveForward(-25, SLOW);
         waitForDriveMotors();
-        rotateRight(90, MAX_SPEED);
+        rotateRight(90, SLOW);
         waitForDriveMotors();
-        moveForward(20, MAX_SPEED);
+        moveForward(20, SLOW);
         waitForDriveMotors();
-        moveRight(5, MAX_SPEED);
+        moveRight(5, SLOW);
     }
 
     public void redDuckWithNoFreight() {
-        moveForward(-5, MAX_SPEED);
+        moveRight(13, SLOW);
         waitForDriveMotors();
-        moveRight(8, MAX_SPEED);
+        rotateRight(-90, SLOW);
+        waitForDriveMotors();
+        moveForward(4, SLOW);
+        waitForDriveMotors();
+        moveRight(5, SLOW);
         waitForDriveMotors();
         spinnerRed(SPINNER_SPEED);
         sleep(SPIN_DURATION);
         spinnerEnd();
-        moveRight(-8, MAX_SPEED);
         waitForDriveMotors();
-        moveForward(6, MAX_SPEED);
+        moveBackward(20, SLOW);
         waitForDriveMotors();
-        moveForward(-24.5, MAX_SPEED);
-        waitForDriveMotors();
-        moveRight(11, MAX_SPEED);
     }
 
     public void redWarehouseWithFreight() {
-        moveForward(7, MAX_SPEED);
+        moveRight(18,SLOW);
         waitForDriveMotors();
-        liftArm(401, LIFT_ARM_ROTATE_PWR); // 140
-        sleep(5000);
-        moveForward(10, MAX_SPEED);
+        moveBackward(6,SLOW);
         waitForDriveMotors();
+        rotateRight(180, SLOW);
+        waitForDriveMotors();
+        moveForward(16, SLOW);
+        waitForDriveMotors();
+
+        liftArm(LIFT_5,1);
+        waitForArm();
         takeOut(1);
-        sleep(1000);
+        sleep(500);
         intakeOff();
-        liftArm(-287, LIFT_ARM_ROTATE_PWR); // -100
-        sleep(8000);
-        rotateRight(90, MAX_SPEED);
+        liftArm(LIFT_0,1);
+        waitForArm();
+        //score
+        moveRight(19, SLOW);
         waitForDriveMotors();
-        moveForward(65, MAX_SPEED);
-        liftArm(-114, LIFT_ARM_ROTATE_PWR); // -40
-        sleep(2000);
+        rotateRight( -90, SLOW);
         waitForDriveMotors();
-        rotateRight(180, MAX_SPEED / 2);
+        moveLeft(27, SLOW);
+        waitForDriveMotors();
+        moveBackward(36, SLOW);
+        waitForDriveMotors();
+        moveRight(26, SLOW);
+        waitForDriveMotors();
     }
 
     public void redWarehouseWithNoFreight() {
 //        liftArm(29, LIFT_ARM_ROTATE_PWR); // was 10
-        moveForward(-36, MAX_SPEED);
+        moveBackward(36, SLOW);
         waitForDriveMotors();
-        moveRight(30, MAX_SPEED);
+        moveRight(25, SLOW);
         waitForDriveMotors();
-        rotateRight(-52, MAX_SPEED);
+        rotateRight(-90, SLOW);
         waitForDriveMotors();
-        moveRight(-33, MAX_SPEED);
+        moveLeft(25, SLOW);
         waitForDriveMotors();
 //        liftArm(-29, LIFT_ARM_ROTATE_PWR); // was -10
     }
 
     public void blueDuckWithFreight() { // unfinished
-        moveRight(-4.75, MAX_SPEED);
+        moveRight(-4.75, SLOW);
         waitForDriveMotors();
-        moveForward(5, MAX_SPEED);
+        moveForward(5, SLOW);
         waitForDriveMotors();
         spinnerBlue(SPINNER_SPEED);
         sleep(SPIN_DURATION);
         spinnerEnd();
-        moveForward(-5, MAX_SPEED);
+        moveForward(-5, SLOW);
         waitForDriveMotors();
-        moveRight(6, MAX_SPEED);
+        moveRight(6, SLOW);
         waitForDriveMotorsFast();
-        moveForward(-33, MAX_SPEED);
+        moveForward(-33, SLOW);
         waitForDriveMotors();
-        moveRight(-20, MAX_SPEED);
+        moveRight(-20, SLOW);
         waitForDriveMotors();
-        rotateRight(-90, MAX_SPEED);
+        rotateRight(-90, SLOW);
         waitForDriveMotors();
-        moveRight(-10, MAX_SPEED / 2);
+        moveRight(-10, SLOW / 2);
         waitForDriveMotors();
-        moveForward(7, MAX_SPEED / 2);
+        moveForward(7, SLOW / 2);
         waitForDriveMotors();
         liftArm(LIFT_3, LIFT_ARM_ROTATE_PWR);
         sleep(3000);
         liftArm(-LIFT_3, LIFT_ARM_ROTATE_PWR);
         sleep(3000);
-        moveRight(60, MAX_SPEED);
+        moveRight(60, SLOW);
         waitForDriveMotors();
     }
 
     public void blueDuckWithNoFreight() {
-        moveRight(-4.75, MAX_SPEED);
+        moveRight(-4.75, SLOW);
         waitForDriveMotors();
-        moveForward(2.75, MAX_SPEED);
+        moveForward(2.75, SLOW);
         waitForDriveMotors();
         spinnerBlue(SPINNER_SPEED);
         sleep(SPIN_DURATION);
         spinnerEnd();
-        moveForward(-6.5, MAX_SPEED);
+        moveForward(-6.5, SLOW);
         waitForDriveMotors();
-        moveRight(6, MAX_SPEED);
+        moveRight(6, SLOW);
         waitForDriveMotors();
-        moveRight(-33, MAX_SPEED);
+        moveRight(-33, SLOW);
         waitForDriveMotors();
-        moveForward(18, MAX_SPEED);
+        moveForward(18, SLOW);
     }
 
     public void blueWarehouseWithFreight() {
-        rotateRight(1800, MAX_SPEED);
+        rotateRight(1800, SLOW);
     }
 
     public void blueWarehouseWithNoFreight() {
 //        liftArm(29, LIFT_ARM_ROTATE_PWR); // was 10
 //        waitForDriveMotors();
-        moveForward(-36, MAX_SPEED);
+        moveForward(-36, SLOW);
         waitForDriveMotors();
-        moveRight(-30, MAX_SPEED);
+        moveRight(-25, SLOW);
         waitForDriveMotors();
-        rotateRight(52,MAX_SPEED);
+        rotateRight(90, SLOW);
         waitForDriveMotors();
-        moveRight(33, MAX_SPEED);
+        moveRight(25, SLOW);
         waitForDriveMotors();
 //        liftArm(-29, LIFT_ARM_ROTATE_PWR); // was -10
     }
@@ -420,9 +435,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void liftArm(int ticks, double power) {
-        robotArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robotArm.setTargetPosition(ticks);
-
         robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robotArm.setPower(power);
     }
@@ -535,7 +548,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
             telemetry.update();
         }
 
-        robotArm.setPower(0);
+
     }
 
     public void spinnerBlue(double speed) {
