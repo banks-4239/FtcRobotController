@@ -84,15 +84,15 @@ public class BasicOpMode_Auto extends LinearOpMode {
     double wheeldiameter = 100;
     double pi = 3.1415;
     
-    static final double SPINNER_SPEED = .3;
+    static final double SPINNER_SPEED = .15;
     
     static final double LIFT_ARM_ROTATE_PWR = 1;
 
     static final double FAST = 1;
-    static final double MEDIUM = 1;
+    static final double MEDIUM = 0.6;
     static final double SLOW = 0.3;
 
-    static final long SPIN_DURATION = 3500;
+    static final long SPIN_DURATION = 7500;
 
     boolean redOrBlue = true;
 
@@ -177,9 +177,9 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 settingButtonDown2 = false;
             }
 
-            if (gamepad1.left_bumper) {
+            if (gamepad1.dpad_left) {
                 redOrBlue = true;
-            } else if (gamepad1.right_bumper) {
+            } else if (gamepad1.dpad_right) {
                 redOrBlue = false;
             }
 
@@ -283,45 +283,45 @@ public class BasicOpMode_Auto extends LinearOpMode {
         waitForDriveMotors();
         rotateRight(-90, SLOW);
         waitForDriveMotors();
-        moveForward(4, SLOW);
+        moveForward(4.5, SLOW);
         waitForDriveMotors();
-        moveRight(5, SLOW);
+        moveRight(7, SLOW);
         waitForDriveMotors();
         spinnerRed(SPINNER_SPEED);
         sleep(SPIN_DURATION);
         spinnerEnd();
-        waitForDriveMotors();
-        moveBackward(20, SLOW);
+        moveBackward(19, SLOW);
         waitForDriveMotors();
     }
 
     public void redWarehouseWithFreight() {
-        moveRight(18,SLOW);
+        //positioning to score
+        moveRight(18,MEDIUM);
         waitForDriveMotors();
-        moveBackward(6,SLOW);
+        moveBackward(7,MEDIUM);
         waitForDriveMotors();
-        rotateRight(180, SLOW);
+        rotateRight(180, MEDIUM);
         waitForDriveMotors();
-        moveForward(16, SLOW);
+        moveForward(16, MEDIUM);
         waitForDriveMotors();
-
-        liftArm(LIFT_5,1);
+        //scoring
+        liftArm(LIFT_5,LIFT_ARM_ROTATE_PWR);
         waitForArm();
         takeOut(1);
         sleep(500);
         intakeOff();
-        liftArm(LIFT_0,1);
+        liftArm(LIFT_0,LIFT_ARM_ROTATE_PWR);
         waitForArm();
-        //score
-        moveRight(19, SLOW);
+        //parking in the warehouse
+        moveRight(17, MEDIUM);
         waitForDriveMotors();
-        rotateRight( -90, SLOW);
+        rotateRight( -80, MEDIUM);
         waitForDriveMotors();
-        moveLeft(27, SLOW);
+        moveLeft(32, SLOW);
+        waitForDriveMotorsFast();
+        moveBackward(41, MEDIUM);
         waitForDriveMotors();
-        moveBackward(36, SLOW);
-        waitForDriveMotors();
-        moveRight(26, SLOW);
+        moveRight(26, MEDIUM);
         waitForDriveMotors();
     }
 
@@ -380,13 +380,40 @@ public class BasicOpMode_Auto extends LinearOpMode {
         waitForDriveMotors();
         moveRight(6, SLOW);
         waitForDriveMotors();
-        moveRight(-33, SLOW);
+        moveRight(-31, SLOW);
         waitForDriveMotors();
         moveForward(18, SLOW);
     }
 
     public void blueWarehouseWithFreight() {
-        rotateRight(1800, SLOW);
+        //positioning to score
+        moveLeft(18, MEDIUM);
+        waitForDriveMotors();
+        moveBackward(7, MEDIUM);
+        waitForDriveMotors();
+        rotateRight(180, SLOW);
+        waitForDriveMotors();
+        moveForward(16, MEDIUM);
+        waitForDriveMotors();
+        //scoring
+        liftArm(LIFT_5, LIFT_ARM_ROTATE_PWR);
+        waitForArm();
+        takeOut(1);
+        sleep(500);
+        intakeOff();
+        liftArm(LIFT_0, LIFT_ARM_ROTATE_PWR);
+        waitForArm();
+        //parking in the warehouse
+        moveLeft(19, MEDIUM);
+        waitForDriveMotors();
+        rotateRight(90, SLOW);
+        waitForDriveMotors();
+        moveRight(28, MEDIUM);
+        waitForDriveMotorsFast();
+        moveBackward(36, MEDIUM);
+        waitForDriveMotors();
+        moveLeft(26, MEDIUM);
+        waitForDriveMotors();
     }
 
     public void blueWarehouseWithNoFreight() {
