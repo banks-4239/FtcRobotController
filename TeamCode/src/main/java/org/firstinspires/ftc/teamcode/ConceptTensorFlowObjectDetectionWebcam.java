@@ -107,6 +107,8 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         initVuforia();
         initTfod();
 
+        int amountducks = 0;
+
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -135,22 +137,37 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
-                      // step through the list of recognitions and display boundary info.
-                      int i = 0;
-                      for (Recognition recognition : updatedRecognitions) {
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        telemetry.addData("# Object Detected", updatedRecognitions.size());
+                        // step through the list of recognitions and display boundary info.
+                        int i = 0;
+                        for (int p = 0; p != updatedRecognitions.size(); p++) {
+                        /*telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                         telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
                                 recognition.getLeft(), recognition.getTop());
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                recognition.getRight(), recognition.getBottom());
-                        i++;
-                      }
-                      telemetry.addData(scanElement(updatedRecognitions), "");
-                      telemetry.update();
+                                recognition.getRight(), recognition.getBottom());*/
+
+                            if(updatedRecognitions.get(i).getLabel() != "Marker") {
+                                telemetry.addData("", updatedRecognitions.get(i).getLeft());
+                            }
+                            if(updatedRecognitions.get(i).getLeft() < 180){
+                                telemetry.addData("level:",1);
+                            }else{
+                                telemetry.addData("level:",2);
+                            }
+
+
+                        }
+                        if(updatedRecognitions.size() == 0){
+                            telemetry.addData("level:",3);
+                        }
+                        telemetry.update();
+
                     }
                 }
+
             }
+
         }
     }
 
@@ -197,7 +214,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             }
         }
 
-        return Integer.toString(2);
+        return Integer.toString(i);
 
 
     }

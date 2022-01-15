@@ -34,6 +34,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.List;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -84,7 +91,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
     double wheeldiameter = 100;
     double pi = 3.1415;
     
-    static final double SPINNER_SPEED = .15;
+    static final double SPINNER_SPEED = .2;
     
     static final double LIFT_ARM_ROTATE_PWR = 1;
 
@@ -96,6 +103,14 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     boolean redOrBlue = true;
 
+    int hubNum = 3;
+
+    private static final String VUFORIA_KEY =
+            "AWm4j/n/////AAABmTASu/sajk1hgar/ycfLY5JgGop7sElDWeK3soXHJ2uHPc9oVGuCK0sX3RD2E1AhfDOHXj4kZv807ssyyK4L05Jgs+O6yQCXdx2COaW1P/lA3mGZg/sVOAN63z/udwYQ/lxQ/eDymyyuDhfHUk+zctnGk0ZAimwR8MAZ1KKHJ4GuD6zfdDnlvdcP/iXV+/ZnrtHDbZvn+PC9E8GUjsKIOKSeFxakH+fG9fbjOZGyUYy6RusVye1oo0exFKAV8CKDVP/ruVSXDYZfafmPBQunn4TUmnZQGFz5oxSiIcInXyoUgBmimLaKwdM+4wvxacTDz/svJ+4cVv8fh70uRDxHIpXD/HKoeLCyhkpNeoCMxxZk";
+
+
+    private VuforiaLocalizer vuforia;
+
     String[] settings = {
             "",
             "Duck Freight",
@@ -104,10 +119,31 @@ public class BasicOpMode_Auto extends LinearOpMode {
             "Warehouse No Freight",
             ""};
 
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_DM.tflite";
+    private static final String[] LABELS = {
+            //"Ball",
+            //"Cube",
+            "Duck",
+            "Marker"
+    };
+    private TFObjectDetector tfod;
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        int amountducks = 0;
+
+        initVuforia();
+        initTfod();
+
+        if (tfod != null) {
+            tfod.activate();
+
+            tfod.setZoom(1, 16.0/9.0);
+        }
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -147,6 +183,10 @@ public class BasicOpMode_Auto extends LinearOpMode {
         telemetry.update();
 
         while (!choosingAuto) {
+
+
+
+
             telemetry.addData("Please choose a setting", "");
             if (redOrBlue) {
                 telemetry.addData("Red", settings[onSetting - 1]);
@@ -158,7 +198,8 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 telemetry.addData("Blue", settings[onSetting + 1]);
             }
 
-            telemetry.update();
+            telemetry.addData("hub", hubNum);
+
             if (gamepad1.dpad_up) {
                 if (onSetting > 1 && !settingButtonDown1) {
                     onSetting--;
@@ -192,6 +233,11 @@ public class BasicOpMode_Auto extends LinearOpMode {
                     autoMode = onSetting + 4;
                 }
             }
+            hubNum = getElement();
+            telemetry.update();
+
+
+
         }
 /*
         telemetry.clearAll();
@@ -230,15 +276,19 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 break;
             case 5:
                 blueDuckWithFreight();
+                flipHub();
                 break;
             case 6:
                 blueDuckWithNoFreight();
+                flipHub();
                 break;
             case 7:
                 blueWarehouseWithFreight();
+                flipHub();
                 break;
             case 8:
                 blueWarehouseWithNoFreight();
+                flipHub();
                 break;
         }
 
@@ -285,12 +335,12 @@ public class BasicOpMode_Auto extends LinearOpMode {
         waitForDriveMotors();
         moveForward(4.5, SLOW);
         waitForDriveMotors();
-        moveRight(7, SLOW);
+        moveRight(5, 0.1);
         waitForDriveMotors();
         spinnerRed(SPINNER_SPEED);
         sleep(SPIN_DURATION);
         spinnerEnd();
-        moveBackward(19, SLOW);
+        moveBackward(21, SLOW);
         waitForDriveMotors();
     }
 
@@ -430,6 +480,16 @@ public class BasicOpMode_Auto extends LinearOpMode {
 //        liftArm(-29, LIFT_ARM_ROTATE_PWR); // was -10
     }
 
+
+    public void flipHub(){
+        if(hubNum == 3){
+            hubNum = 1;
+        }else{
+            if(hubNum == 1){
+                hubNum = 3;
+            }
+        }
+    }
 
     public int inchestoticks(double inches) {
         return (int) Math.round((inches * ticksperrotation) / (mmperin * wheeldiameter * pi));
@@ -589,4 +649,73 @@ public class BasicOpMode_Auto extends LinearOpMode {
     public void spinnerEnd() {
         spinner.setPower(0);
     }
+
+    private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    }
+
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minResultConfidence = 0.8f;
+        tfodParameters.isModelTensorFlow2 = true;
+        tfodParameters.inputSize = 320;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+    }
+
+    public int getElement(){
+
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+               // telemetry.addData("# Object Detected", updatedRecognitions.size());
+                // step through the list of recognitions and display boundary info.
+                int i = 0;
+                for (int p = 0; p != updatedRecognitions.size(); p++) {
+                        /*telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                recognition.getLeft(), recognition.getTop());
+                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                recognition.getRight(), recognition.getBottom());*/
+
+                    if(updatedRecognitions.get(i).getLabel() != "Marker") {
+                        telemetry.addData("", updatedRecognitions.get(i).getLeft());
+                    }
+                    if(updatedRecognitions.get(i).getLeft() < 180){
+                        return 1;
+                    }else{
+                        return 2;
+                    }
+
+
+                }
+                if(updatedRecognitions.size() == 0){
+                    return 3;
+                }
+
+
+            }
+
+        }
+        return hubNum;
+    }
+
+
+
+
 }
