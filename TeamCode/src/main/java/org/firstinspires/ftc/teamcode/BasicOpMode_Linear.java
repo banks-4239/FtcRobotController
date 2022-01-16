@@ -171,6 +171,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double rotate = activeGamepad1.right_stick_x;
 
             boolean fast = activeGamepad1.right_stick_button;
+            boolean altintake = activeGamepad1.left_stick_button;
 
             boolean takingIn = activeGamepad1.a;
             boolean takingOut = activeGamepad1.b;
@@ -283,7 +284,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
                     toggled = 0;
                 }
 
-                if (takingIn) {
+                if (takingIn || altintake) {
                     intake.setPower(1);
                 }
 

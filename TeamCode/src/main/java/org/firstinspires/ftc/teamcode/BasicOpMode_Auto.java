@@ -276,19 +276,19 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 break;
             case 5:
                 blueDuckWithFreight();
-                flipHub();
+                //flipHub();
                 break;
             case 6:
                 blueDuckWithNoFreight();
-                flipHub();
+                //flipHub();
                 break;
             case 7:
                 blueWarehouseWithFreight();
-                flipHub();
+                //flipHub();
                 break;
             case 8:
                 blueWarehouseWithNoFreight();
-                flipHub();
+                //flipHub();
                 break;
         }
 
@@ -296,13 +296,45 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void redDuckWithFreight() {
-        moveForward(5, SLOW);
-        waitForDriveMotors();
-        moveRight(8, SLOW);
-        waitForDriveMotors();
+
+
+
+        moveRight(13, MEDIUM);
+        waitForDriveMotorsFast();
+        moveForward(-4.5, MEDIUM);
+        waitForDriveMotorsFast();
+        moveRight(4.5, 0.1);
+        waitForDriveMotorsFast();
         spinnerRed(SPINNER_SPEED);
-        sleep(SPIN_DURATION);
+        sleep(SPIN_DURATION - 500);
         spinnerEnd();
+        moveForward(-8, MEDIUM);
+        waitForDriveMotorsFast();
+        moveRight(8, 0.1);
+        waitForDriveMotorsFast();
+        moveForward(-16, MEDIUM);
+        waitForDriveMotorsFast();
+        moveRight(-8, 0.1);
+        waitForDriveMotorsFast();
+        rotateRight(-90, MEDIUM);
+        waitForDriveMotors();
+
+        switch(hubNum){//30 towards hub
+            case 1:
+                level1(30);
+                break;
+            case 2:
+                level2(30);
+                break;
+            case 3:
+                level3(30);
+                break;
+        }
+
+
+
+
+        /*
         moveRight(-8, SLOW);
         waitForDriveMotors();
         moveForward(7, SLOW);
@@ -311,14 +343,17 @@ public class BasicOpMode_Auto extends LinearOpMode {
         waitForDriveMotors();
         rotateRight(-90, SLOW);
         waitForDriveMotors();
-        moveForward(25, SLOW);
-        liftArm(459, LIFT_ARM_ROTATE_PWR); // was 160
-        sleep(1500);
-        takeOut(1);
-        sleep(3000);
-        intakeOff();
-        liftArm(-115, LIFT_ARM_ROTATE_PWR); // was -40
-        sleep(1500);
+        switch(hubNum){
+            case 1:
+                level1();
+                break;
+            case 2:
+                level2();
+                break;
+            case 3:
+                level3();
+                break;
+        }
         moveForward(-25, SLOW);
         waitForDriveMotors();
         rotateRight(90, SLOW);
@@ -326,6 +361,8 @@ public class BasicOpMode_Auto extends LinearOpMode {
         moveForward(20, SLOW);
         waitForDriveMotors();
         moveRight(5, SLOW);
+
+         */
     }
 
     public void redDuckWithNoFreight() {
@@ -481,7 +518,29 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
 
-    public void flipHub(){
+    public void level1(double inches){
+        moveForward(inches, SLOW);
+        waitForDriveMotors();
+        liftArm(459, LIFT_ARM_ROTATE_PWR); // was 160
+        sleep(1500);
+        takeOut(1);
+        sleep(3000);
+        intakeOff();
+        liftArm(-115, LIFT_ARM_ROTATE_PWR); // was -40
+        sleep(1500);
+    }
+
+    public void level2(double inches){
+        level1(inches);
+    }
+
+    public void level3(double inches){
+        level1(inches);
+    }
+
+
+
+    /*public void flipHub(){
         if(hubNum == 3){
             hubNum = 1;
         }else{
@@ -489,7 +548,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 hubNum = 3;
             }
         }
-    }
+    }*/
 
     public int inchestoticks(double inches) {
         return (int) Math.round((inches * ticksperrotation) / (mmperin * wheeldiameter * pi));
