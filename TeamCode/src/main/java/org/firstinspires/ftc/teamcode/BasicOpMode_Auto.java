@@ -59,75 +59,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 //@Disabled
 public class BasicOpMode_Auto extends LinearOpMode {
 
-    boolean choosingAuto = false;
-    int autoMode = 0;
-
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightBackDrive = null;
-    private DcMotor robotArm = null;
-    private DcMotor intake = null;
-    private DcMotor spinner = null;
-
-    double mmperin = 0.039701;
-
-    int onSetting = 1;
-
-    static int LIFT_5 = 5100; // 1850;
-    static int LIFT_4 = 3444; // 1200;
-    static int LIFT_3 = 1578; // 550;
-    static int LIFT_2 = 947;  // 330;
-    static int LIFT_1 = 344;  // 120;
-    static int LIFT_0 = 00;
-
-    boolean settingButtonDown1 = false;
-    boolean settingButtonDown2 = false;
-
-    double ticksperrotation = 537.7;
-    double ticksperdegree = 1.06805555556;
-    double wheeldiameter = 100;
-    double pi = 3.1415;
-    
-    static final double SPINNER_SPEED = .2;
-    
-    static final double LIFT_ARM_ROTATE_PWR = 1;
-
-    static final double FAST = 1;
-    static final double MEDIUM = 0.6;
-    static final double SLOW = 0.3;
-
-    static final long SPIN_DURATION = 7500;
-
-    boolean redOrBlue = true;
-
-    int hubNum = 3;
-
-    private static final String VUFORIA_KEY =
-            "AWm4j/n/////AAABmTASu/sajk1hgar/ycfLY5JgGop7sElDWeK3soXHJ2uHPc9oVGuCK0sX3RD2E1AhfDOHXj4kZv807ssyyK4L05Jgs+O6yQCXdx2COaW1P/lA3mGZg/sVOAN63z/udwYQ/lxQ/eDymyyuDhfHUk+zctnGk0ZAimwR8MAZ1KKHJ4GuD6zfdDnlvdcP/iXV+/ZnrtHDbZvn+PC9E8GUjsKIOKSeFxakH+fG9fbjOZGyUYy6RusVye1oo0exFKAV8CKDVP/ruVSXDYZfafmPBQunn4TUmnZQGFz5oxSiIcInXyoUgBmimLaKwdM+4wvxacTDz/svJ+4cVv8fh70uRDxHIpXD/HKoeLCyhkpNeoCMxxZk";
-
-
-    private VuforiaLocalizer vuforia;
-
-    String[] settings = {
-            "",
-            "Duck Freight",
-            "Duck No Freight",
-            "Warehouse Freight",
-            "Warehouse No Freight",
-            ""};
-
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_DM.tflite";
-    private static final String[] LABELS = {
-            //"Ball",
-            //"Cube",
-            "Duck",
-            "Marker"
-    };
-    private TFObjectDetector tfod;
-
+    RobotReference rb = new RobotReference();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -139,101 +71,72 @@ public class BasicOpMode_Auto extends LinearOpMode {
         initVuforia();
         initTfod();
 
-        if (tfod != null) {
-            tfod.activate();
+        if (rb.tfod != null) {
+            rb.tfod.activate();
 
-            tfod.setZoom(1, 16.0/9.0);
+            rb.tfod.setZoom(1, 16.0/9.0);
         }
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "fl");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "fr");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "bl");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "br");
-        robotArm = hardwareMap.get(DcMotor.class, "ra");
-        intake = hardwareMap.get(DcMotor.class, "in");
-        spinner = hardwareMap.get(DcMotor.class, "sc");
 
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        spinner.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
-        robotArm.setDirection(DcMotor.Direction.REVERSE);
-
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robotArm.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
-
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robotArm.setTargetPosition(0);
-        robotArm.setPower(1);
-        robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         telemetry.addData("Please choose a mode!", "up - redDuck, right - redWarehouse, left - blueDuck, down - blueWarehouse");
         telemetry.update();
 
-        while (!choosingAuto) {
+        while (!rb.choosingAuto) {
 
 
 
 
             telemetry.addData("Please choose a setting", "");
-            if (redOrBlue) {
-                telemetry.addData("Red", settings[onSetting - 1]);
-                telemetry.addData("Red", ">" + settings[onSetting]);
-                telemetry.addData("Red", settings[onSetting + 1]);
+            if (rb.redOrBlue) {
+                telemetry.addData("Red", rb.settings[rb.onSetting - 1]);
+                telemetry.addData("Red", ">" + rb.settings[rb.onSetting]);
+                telemetry.addData("Red", rb.settings[rb.onSetting + 1]);
             } else {
-                telemetry.addData("Blue", settings[onSetting - 1]);
-                telemetry.addData("Blue", ">" + settings[onSetting]);
-                telemetry.addData("Blue", settings[onSetting + 1]);
+                telemetry.addData("Blue", rb.settings[rb.onSetting - 1]);
+                telemetry.addData("Blue", ">" + rb.settings[rb.onSetting]);
+                telemetry.addData("Blue", rb.settings[rb.onSetting + 1]);
             }
 
-            telemetry.addData("hub", hubNum);
+            telemetry.addData("hub", rb.hubNum);
 
             if (gamepad1.dpad_up) {
-                if (onSetting > 1 && !settingButtonDown1) {
-                    onSetting--;
+                if (rb.onSetting > 1 && !rb.settingButtonDown1) {
+                    rb.onSetting--;
                 }
-                settingButtonDown1 = true;
+                rb.settingButtonDown1 = true;
             } else {
-                settingButtonDown1 = false;
+                rb.settingButtonDown1 = false;
             }
 
             if (gamepad1.dpad_down) {
-                if (onSetting < 4 && !settingButtonDown2) {
-                    onSetting++;
+                if (rb.onSetting < 4 && !rb.settingButtonDown2) {
+                    rb.onSetting++;
                 }
-                settingButtonDown2 = true;
+                rb.settingButtonDown2 = true;
             } else {
-                settingButtonDown2 = false;
+                rb.settingButtonDown2 = false;
             }
 
             if (gamepad1.dpad_left) {
-                redOrBlue = true;
+                rb.redOrBlue = true;
             } else if (gamepad1.dpad_right) {
-                redOrBlue = false;
+                rb.redOrBlue = false;
             }
 
             if (isStarted()) {
-                if (redOrBlue) {
-                    choosingAuto = true;
-                    autoMode = onSetting;
+                if (rb.redOrBlue) {
+                    rb.choosingAuto = true;
+                    rb.autoMode = rb.onSetting;
                 } else {
-                    choosingAuto = true;
-                    autoMode = onSetting + 4;
+                    rb.choosingAuto = true;
+                    rb.autoMode = rb.onSetting + 4;
                 }
             }
-            hubNum = getElement();
+            rb.hubNum = getElement();
             telemetry.update();
 
 
@@ -250,18 +153,18 @@ public class BasicOpMode_Auto extends LinearOpMode {
 */
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        runtime.reset();
+        rb.runtime.reset();
 
         telemetry.addData("DcMotors", "Starting at %7d :%7d :%7d :%7d",
-                rightFrontDrive.getCurrentPosition(),
-                leftFrontDrive.getCurrentPosition(),
-                rightBackDrive.getCurrentPosition(),
-                leftBackDrive.getCurrentPosition());
+                rb.rightFrontDrive.getCurrentPosition(),
+                rb.leftFrontDrive.getCurrentPosition(),
+                rb.rightBackDrive.getCurrentPosition(),
+                rb.leftBackDrive.getCurrentPosition());
         //spinner.getCurrentPosition());
         telemetry.update();
 
         //enter autonomous code here//////////////////////////////////////////////////////////////////////////////////////////
-        switch (autoMode) {
+        switch (rb.autoMode) {
             case 1:
                 redDuckWithFreight();
                 break;
@@ -299,27 +202,27 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
 
 
-        moveRight(13, MEDIUM);
+        moveRight(13, rb.MEDIUM);
         waitForDriveMotorsFast();
-        moveForward(-4.5, MEDIUM);
+        moveForward(-4.5, rb.MEDIUM);
         waitForDriveMotorsFast();
         moveRight(4.5, 0.1);
         waitForDriveMotorsFast();
-        spinnerRed(SPINNER_SPEED);
-        sleep(SPIN_DURATION - 500);
+        spinnerRed(rb.SPINNER_SPEED);
+        sleep(rb.SPIN_DURATION - 500);
         spinnerEnd();
-        moveForward(-8, MEDIUM);
+        moveForward(-8, rb.MEDIUM);
         waitForDriveMotorsFast();
         moveRight(8, 0.1);
         waitForDriveMotorsFast();
-        moveForward(-16, MEDIUM);
+        moveForward(-16, rb.MEDIUM);
         waitForDriveMotorsFast();
         moveRight(-8, 0.1);
         waitForDriveMotorsFast();
-        rotateRight(-90, MEDIUM);
+        rotateRight(-90, rb.MEDIUM);
         waitForDriveMotors();
 
-        switch(hubNum){//30 towards hub
+        switch(rb.hubNum){//30 towards hub
             case 1:
                 level1(30);
                 break;
@@ -366,192 +269,205 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void redDuckWithNoFreight() {
-        moveRight(13, SLOW);
+        moveRight(13, rb.SLOW);
         waitForDriveMotors();
-        rotateRight(-90, SLOW);
+        rotateRight(-90, rb.SLOW);
         waitForDriveMotors();
-        moveForward(4.5, SLOW);
+        moveForward(4.5, rb.SLOW);
         waitForDriveMotors();
         moveRight(5, 0.1);
         waitForDriveMotors();
-        spinnerRed(SPINNER_SPEED);
-        sleep(SPIN_DURATION);
+        spinnerRed(rb.SPINNER_SPEED);
+        sleep(rb.SPIN_DURATION);
         spinnerEnd();
-        moveBackward(21, SLOW);
+        moveBackward(21, rb.SLOW);
         waitForDriveMotors();
     }
 
     public void redWarehouseWithFreight() {
         //positioning to score
-        moveRight(18,MEDIUM);
+        moveRight(18,rb.MEDIUM);
         waitForDriveMotors();
-        moveBackward(7,MEDIUM);
+        moveBackward(7,rb.MEDIUM);
         waitForDriveMotors();
-        rotateRight(180, MEDIUM);
+        rotateRight(180, rb.MEDIUM);
         waitForDriveMotors();
-        moveForward(16, MEDIUM);
+        moveForward(16, rb.MEDIUM);
         waitForDriveMotors();
         //scoring
-        liftArm(LIFT_5,LIFT_ARM_ROTATE_PWR);
+        liftArm(rb.LIFT_5,rb.LIFT_ARM_ROTATE_PWR);
         waitForArm();
         takeOut(1);
         sleep(500);
         intakeOff();
-        liftArm(LIFT_0,LIFT_ARM_ROTATE_PWR);
+        liftArm(rb.LIFT_0,rb.LIFT_ARM_ROTATE_PWR);
         waitForArm();
         //parking in the warehouse
-        moveRight(17, MEDIUM);
+        moveRight(17, rb.MEDIUM);
         waitForDriveMotors();
-        rotateRight( -80, MEDIUM);
+        rotateRight( -80, rb.MEDIUM);
         waitForDriveMotors();
-        moveLeft(32, SLOW);
+        moveLeft(32, rb.SLOW);
         waitForDriveMotorsFast();
-        moveBackward(41, MEDIUM);
+        moveBackward(41, rb.MEDIUM);
         waitForDriveMotors();
-        moveRight(26, MEDIUM);
+        moveRight(26, rb.MEDIUM);
         waitForDriveMotors();
     }
 
     public void redWarehouseWithNoFreight() {
-//        liftArm(29, LIFT_ARM_ROTATE_PWR); // was 10
-        moveBackward(36, SLOW);
+//        liftArm(29, rb.LIFT_ARM_ROTATE_PWR); // was 10
+        moveBackward(36, rb.SLOW);
         waitForDriveMotors();
-        moveRight(25, SLOW);
+        moveRight(25, rb.SLOW);
         waitForDriveMotors();
-        rotateRight(-90, SLOW);
+        rotateRight(-90, rb.SLOW);
         waitForDriveMotors();
-        moveLeft(25, SLOW);
+        moveLeft(25, rb.SLOW);
         waitForDriveMotors();
-//        liftArm(-29, LIFT_ARM_ROTATE_PWR); // was -10
+//        liftArm(-29, rb.LIFT_ARM_ROTATE_PWR); // was -10
     }
 
     public void blueDuckWithFreight() { // unfinished
-        moveRight(-4.75, SLOW);
+        moveRight(-4.75, rb.SLOW);
         waitForDriveMotors();
-        moveForward(5, SLOW);
+        moveForward(5, rb.SLOW);
         waitForDriveMotors();
-        spinnerBlue(SPINNER_SPEED);
-        sleep(SPIN_DURATION);
+        spinnerBlue(rb.SPINNER_SPEED);
+        sleep(rb.SPIN_DURATION);
         spinnerEnd();
-        moveForward(-5, SLOW);
+        moveForward(-5, rb.SLOW);
         waitForDriveMotors();
-        moveRight(6, SLOW);
+        moveRight(6, rb.SLOW);
         waitForDriveMotorsFast();
-        moveForward(-33, SLOW);
+        moveForward(-33, rb.SLOW);
         waitForDriveMotors();
-        moveRight(-20, SLOW);
+        moveRight(-20, rb.SLOW);
         waitForDriveMotors();
-        rotateRight(-90, SLOW);
+        rotateRight(-90, rb.SLOW);
         waitForDriveMotors();
-        moveRight(-10, SLOW / 2);
+        moveRight(-10, rb.SLOW / 2);
         waitForDriveMotors();
-        moveForward(7, SLOW / 2);
+        moveForward(7, rb.SLOW / 2);
         waitForDriveMotors();
-        liftArm(LIFT_3, LIFT_ARM_ROTATE_PWR);
+        liftArm(rb.LIFT_3, rb.LIFT_ARM_ROTATE_PWR);
         sleep(3000);
-        liftArm(-LIFT_3, LIFT_ARM_ROTATE_PWR);
+        liftArm(-rb.LIFT_3, rb.LIFT_ARM_ROTATE_PWR);
         sleep(3000);
-        moveRight(60, SLOW);
+        moveRight(60, rb.SLOW);
         waitForDriveMotors();
     }
 
     public void blueDuckWithNoFreight() {
-        moveRight(-4.75, SLOW);
+        moveRight(-4.75, rb.SLOW);
         waitForDriveMotors();
-        moveForward(2.75, SLOW);
+        moveForward(2.75, rb.SLOW);
         waitForDriveMotors();
-        spinnerBlue(SPINNER_SPEED);
-        sleep(SPIN_DURATION);
+        spinnerBlue(rb.SPINNER_SPEED);
+        sleep(rb.SPIN_DURATION);
         spinnerEnd();
-        moveForward(-6.5, SLOW);
+        moveForward(-6.5, rb.SLOW);
         waitForDriveMotors();
-        moveRight(6, SLOW);
+        moveRight(6, rb.SLOW);
         waitForDriveMotors();
-        moveRight(-31, SLOW);
+        moveRight(-31, rb.SLOW);
         waitForDriveMotors();
-        moveForward(18, SLOW);
+        moveForward(18, rb.SLOW);
     }
 
     public void blueWarehouseWithFreight() {
         //positioning to score
-        moveLeft(18, MEDIUM);
+        moveLeft(18, rb.MEDIUM);
         waitForDriveMotors();
-        moveBackward(7, MEDIUM);
+        moveBackward(7, rb.MEDIUM);
         waitForDriveMotors();
-        rotateRight(180, SLOW);
+        rotateRight(180, rb.SLOW);
         waitForDriveMotors();
-        moveForward(16, MEDIUM);
+        moveForward(16, rb.MEDIUM);
         waitForDriveMotors();
         //scoring
-        liftArm(LIFT_5, LIFT_ARM_ROTATE_PWR);
+        liftArm(rb.LIFT_5, rb.LIFT_ARM_ROTATE_PWR);
         waitForArm();
         takeOut(1);
         sleep(500);
         intakeOff();
-        liftArm(LIFT_0, LIFT_ARM_ROTATE_PWR);
+        liftArm(rb.LIFT_0, rb.LIFT_ARM_ROTATE_PWR);
         waitForArm();
         //parking in the warehouse
-        moveLeft(19, MEDIUM);
+        moveLeft(19, rb.MEDIUM);
         waitForDriveMotors();
-        rotateRight(90, SLOW);
+        rotateRight(90, rb.SLOW);
         waitForDriveMotors();
-        moveRight(28, MEDIUM);
+        moveRight(28, rb.MEDIUM);
         waitForDriveMotorsFast();
-        moveBackward(36, MEDIUM);
+        moveBackward(36, rb.MEDIUM);
         waitForDriveMotors();
-        moveLeft(26, MEDIUM);
+        moveLeft(26, rb.MEDIUM);
         waitForDriveMotors();
     }
 
     public void blueWarehouseWithNoFreight() {
-//        liftArm(29, LIFT_ARM_ROTATE_PWR); // was 10
+//        liftArm(29, rb.LIFT_ARM_ROTATE_PWR); // was 10
 //        waitForDriveMotors();
-        moveForward(-36, SLOW);
+        moveForward(-36, rb.SLOW);
         waitForDriveMotors();
-        moveRight(-25, SLOW);
+        moveRight(-25, rb.SLOW);
         waitForDriveMotors();
-        rotateRight(90, SLOW);
+        rotateRight(90, rb.SLOW);
         waitForDriveMotors();
-        moveRight(25, SLOW);
+        moveRight(25, rb.SLOW);
         waitForDriveMotors();
-//        liftArm(-29, LIFT_ARM_ROTATE_PWR); // was -10
+//        liftArm(-29, rb.LIFT_ARM_ROTATE_PWR); // was -10
     }
 
 
     public void level1(double inches){
-        moveForward(inches, SLOW);
+        moveForward(inches, rb.SLOW);
         waitForDriveMotors();
-        liftArm(459, LIFT_ARM_ROTATE_PWR); // was 160
+        liftArm(rb.LEVEL_1, rb.LIFT_ARM_ROTATE_PWR); // was 160
         sleep(1500);
         takeOut(1);
         sleep(3000);
         intakeOff();
-        liftArm(-115, LIFT_ARM_ROTATE_PWR); // was -40
+        liftArm(rb.LIFT_0, rb.LIFT_ARM_ROTATE_PWR); // was -40
         sleep(1500);
     }
 
     public void level2(double inches){
-        level1(inches);
+        moveForward(inches, rb.SLOW);
+        waitForDriveMotors();
+        liftArm(459, rb.LIFT_ARM_ROTATE_PWR); // was 160
+        sleep(1500);
+        takeOut(1);
+        sleep(3000);
+        intakeOff();
+        liftArm(-115, rb.LIFT_ARM_ROTATE_PWR); // was -40
+        sleep(1500);
     }
 
     public void level3(double inches){
-        level1(inches);
+        moveForward(inches, rb.SLOW);
+        waitForDriveMotors();
+        liftArm(459, rb.LIFT_ARM_ROTATE_PWR); // was 160
+        sleep(1500);
+        takeOut(1);
+        sleep(3000);
+        intakeOff();
+        liftArm(-115, rb.LIFT_ARM_ROTATE_PWR); // was -40
+        sleep(1500);
     }
 
 
 
-    /*public void flipHub(){
-        if(hubNum == 3){
-            hubNum = 1;
-        }else{
-            if(hubNum == 1){
-                hubNum = 3;
-            }
+    public void flipHub(){
+        rb.hubNum++;
+        if(rb.hubNum == 4) {
+            rb.hubNum = 1;
         }
-    }*/
+    }
 
     public int inchestoticks(double inches) {
-        return (int) Math.round((inches * ticksperrotation) / (mmperin * wheeldiameter * pi));
+        return (int) Math.round((inches * rb.ticksperrotation) / (rb.mmperin * rb.wheeldiameter * rb.pi));
     }
 
     public void moveBackward(double inches, double speed) {
@@ -559,137 +475,137 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void moveForward(double inches, double speed) {
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(inchestoticks(48*inches/46));
-        rightFrontDrive.setTargetPosition(inchestoticks(48*inches/46));
-        leftBackDrive.setTargetPosition(inchestoticks(48*inches/46));
-        rightBackDrive.setTargetPosition(inchestoticks(48*inches/46));
+        rb.leftFrontDrive.setTargetPosition(inchestoticks(48*inches/46));
+        rb.rightFrontDrive.setTargetPosition(inchestoticks(48*inches/46));
+        rb.leftBackDrive.setTargetPosition(inchestoticks(48*inches/46));
+        rb.rightBackDrive.setTargetPosition(inchestoticks(48*inches/46));
 
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftFrontDrive.setPower(speed);
-        rightFrontDrive.setPower(speed);
-        leftBackDrive.setPower(speed);
-        rightBackDrive.setPower(speed);
+        rb.leftFrontDrive.setPower(speed);
+        rb.rightFrontDrive.setPower(speed);
+        rb.leftBackDrive.setPower(speed);
+        rb.rightBackDrive.setPower(speed);
     }
 
     public void liftArm(int ticks, double power) {
-        robotArm.setTargetPosition(ticks);
-        robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robotArm.setPower(power);
+        rb.robotArm.setTargetPosition(ticks);
+        rb.robotArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.robotArm.setPower(power);
     }
 
     public void rotateRight(int degrees, double speed) {
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(degrees * 36/5);
-        rightFrontDrive.setTargetPosition(-degrees * 36/5);
-        leftBackDrive.setTargetPosition(degrees * 36/5);
-        rightBackDrive.setTargetPosition(-degrees * 36/5);
+        rb.leftFrontDrive.setTargetPosition(degrees * 36/5);
+        rb.rightFrontDrive.setTargetPosition(-degrees * 36/5);
+        rb.leftBackDrive.setTargetPosition(degrees * 36/5);
+        rb.rightBackDrive.setTargetPosition(-degrees * 36/5);
 
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftFrontDrive.setPower(speed);
-        rightFrontDrive.setPower(speed);
-        leftBackDrive.setPower(speed);
-        rightBackDrive.setPower(speed);
+        rb.leftFrontDrive.setPower(speed);
+        rb.rightFrontDrive.setPower(speed);
+        rb.leftBackDrive.setPower(speed);
+        rb.rightBackDrive.setPower(speed);
     }
 
     public void moveDiagonal(double inches, double speed) { //WORK IN PROGRESS
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //leftFrontDrive.setTargetPosition(inchestoticks(inches));
-        rightFrontDrive.setTargetPosition(-inchestoticks(inches));
-        leftBackDrive.setTargetPosition(-inchestoticks(inches));
+        rb.rightFrontDrive.setTargetPosition(-inchestoticks(inches));
+        rb.leftBackDrive.setTargetPosition(-inchestoticks(inches));
         //rightBackDrive.setTargetPosition(inchestoticks(inches));
 
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftFrontDrive.setPower(speed);
-        rightFrontDrive.setPower(speed);
-        leftBackDrive.setPower(speed);
-        rightBackDrive.setPower(speed);
+        rb.leftFrontDrive.setPower(speed);
+        rb.rightFrontDrive.setPower(speed);
+        rb.leftBackDrive.setPower(speed);
+        rb.rightBackDrive.setPower(speed);
     }
     public void moveLeft(double inches, double speed) {
         moveRight(-inches, speed);
     }
     public void moveRight(double inches, double speed) {
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rb.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(inchestoticks((48*48)*inches/(42*46.5)));
-        rightFrontDrive.setTargetPosition(-inchestoticks((48*48)*inches/(42*46.5)));
-        leftBackDrive.setTargetPosition(-inchestoticks((48*48)*inches/(42*46.5)));
-        rightBackDrive.setTargetPosition(inchestoticks((48*48)*inches/(42*46.5)));
+        rb.leftFrontDrive.setTargetPosition(inchestoticks((48*48)*inches/(42*46.5)));
+        rb.rightFrontDrive.setTargetPosition(-inchestoticks((48*48)*inches/(42*46.5)));
+        rb.leftBackDrive.setTargetPosition(-inchestoticks((48*48)*inches/(42*46.5)));
+        rb.rightBackDrive.setTargetPosition(inchestoticks((48*48)*inches/(42*46.5)));
 
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rb.rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftFrontDrive.setPower(speed);
-        rightFrontDrive.setPower(speed);
-        leftBackDrive.setPower(speed);
-        rightBackDrive.setPower(speed);
+        rb.leftFrontDrive.setPower(speed);
+        rb.rightFrontDrive.setPower(speed);
+        rb.leftBackDrive.setPower(speed);
+        rb.rightBackDrive.setPower(speed);
     }
 
     public void takeIn(double speed) {
-        intake.setPower(-speed);
+        rb.intake.setPower(-speed);
     }
 
     public void takeOut(double speed) {
-        intake.setPower(speed);
+        rb.intake.setPower(speed);
     }
 
     void intakeOff() {
-        intake.setPower(0);
+        rb.intake.setPower(0);
     }
 
     public void waitForDriveMotors() {
-        while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() || leftBackDrive.isBusy() || rightBackDrive.isBusy()) {
+        while (rb.leftFrontDrive.isBusy() || rb.rightFrontDrive.isBusy() || rb.leftBackDrive.isBusy() || rb.rightBackDrive.isBusy()) {
             telemetry.update();
         }
-        
-        leftFrontDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        leftBackDrive.setPower(0);
-        rightBackDrive.setPower(0);
+
+        rb.leftFrontDrive.setPower(0);
+        rb.rightFrontDrive.setPower(0);
+        rb.leftBackDrive.setPower(0);
+        rb.rightBackDrive.setPower(0);
     }
 
     public void waitForDriveMotorsFast() {
-        while (leftFrontDrive.isBusy() && rightFrontDrive.isBusy() && leftBackDrive.isBusy() && rightBackDrive.isBusy()) {
+        while (rb.leftFrontDrive.isBusy() && rb.rightFrontDrive.isBusy() && rb.leftBackDrive.isBusy() && rb.rightBackDrive.isBusy()) {
             telemetry.update();
         }
-        
-        leftFrontDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        leftBackDrive.setPower(0);
-        rightBackDrive.setPower(0);
+
+        rb.leftFrontDrive.setPower(0);
+        rb.rightFrontDrive.setPower(0);
+        rb.leftBackDrive.setPower(0);
+        rb.rightBackDrive.setPower(0);
     }
 
     public void waitForArm() {
-        while (robotArm.isBusy())
+        while (rb.robotArm.isBusy())
         {
             telemetry.update();
         }
@@ -698,15 +614,15 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void spinnerBlue(double speed) {
-        spinner.setPower(-speed);
+        rb.spinner.setPower(-speed);
     }
 
     public void spinnerRed(double speed) {
-        spinner.setPower(speed);
+        rb.spinner.setPower(speed);
     }
 
     public void spinnerEnd() {
-        spinner.setPower(0);
+        rb.spinner.setPower(0);
     }
 
     private void initVuforia() {
@@ -715,11 +631,11 @@ public class BasicOpMode_Auto extends LinearOpMode {
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.vuforiaLicenseKey = rb.VUFORIA_KEY;
         parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        rb.vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
@@ -731,18 +647,18 @@ public class BasicOpMode_Auto extends LinearOpMode {
         tfodParameters.minResultConfidence = 0.8f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 320;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+        rb.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, rb.vuforia);
+        rb.tfod.loadModelFromAsset(rb.TFOD_MODEL_ASSET, rb.LABELS);
     }
 
     public int getElement(){
 
-        if (tfod != null) {
+        if (rb.tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
-            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            List<Recognition> updatedRecognitions = rb.tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
-               // telemetry.addData("# Object Detected", updatedRecognitions.size());
+                // telemetry.addData("# Object Detected", updatedRecognitions.size());
                 // step through the list of recognitions and display boundary info.
                 int i = 0;
                 for (int p = 0; p != updatedRecognitions.size(); p++) {
@@ -771,7 +687,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
             }
 
         }
-        return hubNum;
+        return rb.hubNum;
     }
 
 
