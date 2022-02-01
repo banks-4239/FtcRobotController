@@ -144,7 +144,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             boolean fast = rb.activeGamepad1.right_stick_button;
             boolean altintake = rb.activeGamepad1.left_stick_button;
 
-            boolean takingIn = rb.activeGamepad1.a;
+            boolean takingIn = rb.activeGamepad1.a || rb.activeGamepad2.y;
             boolean takingOut = rb.activeGamepad1.b;
 
             double armUp = rb.activeGamepad1.right_trigger;
@@ -154,34 +154,34 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             boolean armMoving;
 
-            if (!cutscene) {
+
                 if (rb.activeGamepad1.back) {
                     cutscene = true;
                 }
 
                 if (facingFront) {
                     if (fast) {
-                        rb.leftFrontDrive.setPower(moveY + rotate - moveX);
-                        rb.rightFrontDrive.setPower(moveY - rotate + moveX);
-                        rb.rightBackDrive.setPower(moveY - rotate - moveX);
-                        rb.leftBackDrive.setPower(moveY + rotate + moveX);
+                        rb.leftFrontDrive.setPower(moveY + rotate + moveX);
+                        rb.rightFrontDrive.setPower(moveY - rotate - moveX);
+                        rb.rightBackDrive.setPower(moveY - rotate + moveX);
+                        rb.leftBackDrive.setPower(moveY + rotate - moveX);
                     } else {
-                        rb.leftFrontDrive.setPower(((moveY / 2) + (rotate / 1.5) - (moveX / 2)));
-                        rb.rightFrontDrive.setPower(((moveY / 2) - (rotate / 1.5) + (moveX / 2)));
-                        rb.rightBackDrive.setPower(((moveY / 2) - (rotate / 1.5) - (moveX / 2)));
-                        rb.leftBackDrive.setPower(((moveY / 2) + (rotate / 1.5) + (moveX / 2)));
+                        rb.leftFrontDrive.setPower(((moveY / 2) + (rotate / 1.5) + (moveX / 2)));
+                        rb.rightFrontDrive.setPower(((moveY / 2) - (rotate / 1.5) - (moveX / 2)));
+                        rb.rightBackDrive.setPower(((moveY / 2) - (rotate / 1.5) + (moveX / 2)));
+                        rb.leftBackDrive.setPower(((moveY / 2) + (rotate / 1.5) - (moveX / 2)));
                     }
                 } else {
                     if (fast) {
-                        rb.leftFrontDrive.setPower(-moveY + rotate + moveX);
-                        rb.rightFrontDrive.setPower(-moveY - rotate - moveX);
-                        rb.rightBackDrive.setPower(-moveY - rotate + moveX);
-                        rb.leftBackDrive.setPower(-moveY + rotate - moveX);
+                        rb.leftFrontDrive.setPower(-moveY + rotate - moveX);
+                        rb.rightFrontDrive.setPower(-moveY - rotate + moveX);
+                        rb.rightBackDrive.setPower(-moveY - rotate - moveX);
+                        rb.leftBackDrive.setPower(-moveY + rotate + moveX);
                     } else {
-                        rb.leftFrontDrive.setPower((-(moveY / 2) + (rotate / 1.5) + (moveX / 2)));
-                        rb.rightFrontDrive.setPower((-(moveY / 2) - (rotate / 1.5) - (moveX / 2)));
-                        rb.rightBackDrive.setPower((-(moveY / 2) - (rotate / 1.5) + (moveX / 2)));
-                        rb.leftBackDrive.setPower((-(moveY / 2) + (rotate / 1.5    ) - (moveX / 2)));
+                        rb.leftFrontDrive.setPower((-(moveY / 2) + (rotate / 1.5) - (moveX / 2)));
+                        rb.rightFrontDrive.setPower((-(moveY / 2) - (rotate / 1.5) + (moveX / 2)));
+                        rb.rightBackDrive.setPower((-(moveY / 2) - (rotate / 1.5) - (moveX / 2)));
+                        rb.leftBackDrive.setPower((-(moveY / 2) + (rotate / 1.5    ) + (moveX / 2)));
                     }
                 }
 
@@ -308,22 +308,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 }*/
 
 
-            } else {
-                //enter coding here
-                telemetry.update();
 
-                moveWheels(0, 1800, 1500, 100, 1);
-                moveWheels(500, 500, 500, 500, 1);
-                moveWheels(-1900, 0, 100, -1600, 1);
-
-                //stop coding here
-                rb.leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                rb.rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                rb.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                rb.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-                cutscene = false;
-            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + rb.runtime.toString());
@@ -334,33 +319,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     }
 
 
-    void moveWheels(int FL, int FR, int BR, int BL, double speed) {
-        int max = absMax(absMax(FL, FR), absMax(BL, BR));
 
-        rb.rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rb.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rb.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rb.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        rb.leftFrontDrive.setTargetPosition(FL);
-        rb.rightFrontDrive.setTargetPosition(FR);
-        rb.leftBackDrive.setTargetPosition(BL);
-        rb.rightBackDrive.setTargetPosition(BR);
 
-        rb.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rb.rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rb.leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rb.rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        rb.leftFrontDrive.setPower(speed);
-        rb.rightFrontDrive.setPower(speed);
-        rb.leftBackDrive.setPower(speed);
-        rb.rightBackDrive.setPower(speed);
-
-        sleep(3000);
-    }
-
-    int absMax(int a, int b) {
-        return (java.lang.Math.max(java.lang.Math.abs(a), java.lang.Math.abs(b)));
-    }
 }

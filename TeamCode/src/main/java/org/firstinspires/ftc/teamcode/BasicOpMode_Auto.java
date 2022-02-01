@@ -61,12 +61,16 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     RobotReference rb = new RobotReference();
 
+    public int hubNum;
+
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         int amountducks = 0;
+
+        rb.init(hardwareMap);
 
         initVuforia();
         initTfod();
@@ -101,7 +105,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 telemetry.addData("Blue", rb.settings[rb.onSetting + 1]);
             }
 
-            telemetry.addData("hub", rb.hubNum);
+            telemetry.addData("hub", hubNum);
 
             if (gamepad1.dpad_up) {
                 if (rb.onSetting > 1 && !rb.settingButtonDown1) {
@@ -136,7 +140,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
                     rb.autoMode = rb.onSetting + 4;
                 }
             }
-            rb.hubNum = getElement();
+            hubNum = getElement();
             telemetry.update();
 
 
@@ -222,7 +226,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rotateRight(-90, rb.MEDIUM);
         waitForDriveMotors();
 
-        switch(rb.hubNum){//30 towards hub
+        switch(hubNum){//30 towards hub
             case 1:
                 level1(30);
                 break;
@@ -290,34 +294,51 @@ public class BasicOpMode_Auto extends LinearOpMode {
         waitForDriveMotors();
         moveBackward(7,rb.MEDIUM);
         waitForDriveMotors();
-        rotateRight(180, rb.MEDIUM);
-        waitForDriveMotors();
-        moveForward(16, rb.MEDIUM);
-        waitForDriveMotors();
-        //scoring
-        liftArm(rb.LIFT_5,rb.LIFT_ARM_ROTATE_PWR);
-        waitForArm();
-        takeOut(1);
-        sleep(500);
-        intakeOff();
-        liftArm(rb.LIFT_0,rb.LIFT_ARM_ROTATE_PWR);
-        waitForArm();
+        if(hubNum != 1) {
+            rotateRight(180, rb.MEDIUM);
+            waitForDriveMotors();
+        }
+        switch(hubNum){//30 towards hub
+            case 1:
+                level1(10);
+                break;
+            case 2:
+                level2(8.5);
+                break;
+            case 3:
+                level3(16);
+                break;
+        }
         //parking in the warehouse
-        moveRight(17, rb.MEDIUM);
-        waitForDriveMotors();
-        rotateRight( -80, rb.MEDIUM);
-        waitForDriveMotors();
-        moveLeft(32, rb.SLOW);
-        waitForDriveMotorsFast();
-        moveBackward(41, rb.MEDIUM);
-        waitForDriveMotors();
-        moveRight(26, rb.MEDIUM);
-        waitForDriveMotors();
+        if(hubNum == 1){
+            moveLeft(17, rb.MEDIUM);
+            waitForDriveMotors();
+            rotateRight( -80, rb.MEDIUM);
+            waitForDriveMotors();
+            moveRight(32, rb.SLOW);
+            waitForDriveMotorsFast();
+            moveForward(44, rb.MEDIUM);
+            waitForDriveMotors();
+            moveLeft(26, rb.MEDIUM);
+            waitForDriveMotors();
+        }else{
+            moveRight(17, rb.MEDIUM);
+            waitForDriveMotors();
+            rotateRight( -80, rb.MEDIUM);
+            waitForDriveMotors();
+            moveLeft(32, rb.SLOW);
+            waitForDriveMotorsFast();
+            moveBackward(45, rb.MEDIUM);
+            waitForDriveMotors();
+            moveRight(26, rb.MEDIUM);
+            waitForDriveMotors();
+        }
+
     }
 
     public void redWarehouseWithNoFreight() {
 //        liftArm(29, rb.LIFT_ARM_ROTATE_PWR); // was 10
-        moveBackward(36, rb.SLOW);
+        moveBackward(36, rb.FAST);
         waitForDriveMotors();
         moveRight(25, rb.SLOW);
         waitForDriveMotors();
@@ -377,33 +398,51 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
     public void blueWarehouseWithFreight() {
         //positioning to score
-        moveLeft(18, rb.MEDIUM);
+        moveLeft(18,rb.MEDIUM);
         waitForDriveMotors();
-        moveBackward(7, rb.MEDIUM);
+        telemetry.addData("diditgo", hubNum);
+        telemetry.update();
+        moveBackward(7,rb.MEDIUM);
         waitForDriveMotors();
-        rotateRight(180, rb.SLOW);
-        waitForDriveMotors();
-        moveForward(16, rb.MEDIUM);
-        waitForDriveMotors();
-        //scoring
-        liftArm(rb.LIFT_5, rb.LIFT_ARM_ROTATE_PWR);
-        waitForArm();
-        takeOut(1);
-        sleep(500);
-        intakeOff();
-        liftArm(rb.LIFT_0, rb.LIFT_ARM_ROTATE_PWR);
-        waitForArm();
+        if(hubNum != 3) {
+            rotateRight(-180, rb.MEDIUM);
+            waitForDriveMotors();
+        }
+        switch(hubNum){//these are switched to accommodate for blue
+            case 1:
+                level2(8.5);
+                break;
+            case 2:
+                level3(16);
+                break;
+            case 3:
+                level1(10);
+                break;
+        }
         //parking in the warehouse
-        moveLeft(19, rb.MEDIUM);
-        waitForDriveMotors();
-        rotateRight(90, rb.SLOW);
-        waitForDriveMotors();
-        moveRight(28, rb.MEDIUM);
-        waitForDriveMotorsFast();
-        moveBackward(36, rb.MEDIUM);
-        waitForDriveMotors();
-        moveLeft(26, rb.MEDIUM);
-        waitForDriveMotors();
+        if(hubNum == 3){
+            moveRight(17, rb.MEDIUM);
+            waitForDriveMotors();
+            rotateRight( 80, rb.MEDIUM);
+            waitForDriveMotors();
+            moveLeft(32, rb.SLOW);
+            waitForDriveMotorsFast();
+            moveForward(44, rb.MEDIUM);
+            waitForDriveMotors();
+            moveRight(26, rb.MEDIUM);
+            waitForDriveMotors();
+        }else{
+            moveLeft(17, rb.MEDIUM);
+            waitForDriveMotors();
+            rotateRight( 80, rb.MEDIUM);
+            waitForDriveMotors();
+            moveRight(32, rb.SLOW);
+            waitForDriveMotorsFast();
+            moveBackward(45, rb.MEDIUM);
+            waitForDriveMotors();
+            moveLeft(26, rb.MEDIUM);
+            waitForDriveMotors();
+        }
     }
 
     public void blueWarehouseWithNoFreight() {
@@ -422,50 +461,62 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
 
     public void level1(double inches){
-        moveForward(inches, rb.SLOW);
+        moveBackward(inches, rb.MEDIUM);
         waitForDriveMotors();
-        liftArm(rb.LEVEL_1, rb.LIFT_ARM_ROTATE_PWR); // was 160
-        sleep(1500);
+        //scoring
+        liftArm(rb.LIFT_2,rb.LIFT_ARM_ROTATE_PWR);
+        waitForArm();
         takeOut(1);
-        sleep(3000);
+        sleep(500);
         intakeOff();
-        liftArm(rb.LIFT_0, rb.LIFT_ARM_ROTATE_PWR); // was -40
-        sleep(1500);
+        liftArm(rb.LIFT_0,rb.LIFT_ARM_ROTATE_PWR);
+        waitForArm();
     }
 
+    
+
     public void level2(double inches){
-        moveForward(inches, rb.SLOW);
+        moveForward(inches, rb.MEDIUM);
         waitForDriveMotors();
-        liftArm(459, rb.LIFT_ARM_ROTATE_PWR); // was 160
-        sleep(1500);
+        //scoring
+        liftArm(rb.LIFT_6,rb.LIFT_ARM_ROTATE_PWR);
+        waitForArm();
         takeOut(1);
-        sleep(3000);
+        sleep(500);
         intakeOff();
-        liftArm(-115, rb.LIFT_ARM_ROTATE_PWR); // was -40
-        sleep(1500);
+        liftArm(rb.LIFT_0,rb.LIFT_ARM_ROTATE_PWR);
+        waitForArm();
     }
 
     public void level3(double inches){
-        moveForward(inches, rb.SLOW);
+        moveForward(inches, rb.MEDIUM);
         waitForDriveMotors();
-        liftArm(459, rb.LIFT_ARM_ROTATE_PWR); // was 160
-        sleep(1500);
+        //scoring
+        liftArm(rb.LIFT_5,rb.LIFT_ARM_ROTATE_PWR);
+        waitForArm();
         takeOut(1);
-        sleep(3000);
+        sleep(500);
         intakeOff();
-        liftArm(-115, rb.LIFT_ARM_ROTATE_PWR); // was -40
-        sleep(1500);
+        liftArm(rb.LIFT_0,rb.LIFT_ARM_ROTATE_PWR);
+        waitForArm();
     }
 
 
-
+/*
     public void flipHub(){
-        rb.hubNum++;
-        if(rb.hubNum == 4) {
-            rb.hubNum = 1;
+        telemetry.addData("before",hubNum);
+        if(hubNum == 2) {
+            hubNum = 3;
+        } else
+        {
+            if(hubNum == 3) {
+                hubNum = 1;
+            }else{
+                hubNum = 2;
+            }
         }
     }
-
+*/
     public int inchestoticks(double inches) {
         return (int) Math.round((inches * rb.ticksperrotation) / (rb.mmperin * rb.wheeldiameter * rb.pi));
     }
@@ -554,10 +605,10 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rb.rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rb.leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        rb.leftFrontDrive.setTargetPosition(inchestoticks((48*48)*inches/(42*46.5)));
-        rb.rightFrontDrive.setTargetPosition(-inchestoticks((48*48)*inches/(42*46.5)));
-        rb.leftBackDrive.setTargetPosition(-inchestoticks((48*48)*inches/(42*46.5)));
-        rb.rightBackDrive.setTargetPosition(inchestoticks((48*48)*inches/(42*46.5)));
+        rb.leftFrontDrive.setTargetPosition(inchestoticks(0 - ((48*48)*inches/(42*46.5))));
+        rb.rightFrontDrive.setTargetPosition(-inchestoticks(0 - ((48*48)*inches/(42*46.5))));
+        rb.leftBackDrive.setTargetPosition(-inchestoticks(0 - ((48*48)*inches/(42*46.5))));
+        rb.rightBackDrive.setTargetPosition(inchestoticks(0 - ((48*48)*inches/(42*46.5))));
 
         rb.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rb.rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -687,7 +738,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
             }
 
         }
-        return rb.hubNum;
+        return hubNum;
     }
 
 

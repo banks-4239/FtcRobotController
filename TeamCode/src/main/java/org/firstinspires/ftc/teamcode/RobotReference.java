@@ -69,13 +69,15 @@ public class RobotReference
 
     int switchingConts = 0;
 
-    double ticksperrotation = 384.5;
+    double ticksperrotation = 537.6;
     double ticksperdegree = 3.95861111111;
     double wheeldiameter = 100;
     double pi = 3.1415;
 
     // 2.87
-    static int LIFT_5 = 5100; // 1850;
+
+    static int LIFT_6 = 6200; // 1850;
+    static int LIFT_5 = 5400; // 1850;
     static int LIFT_4 = 3444; // 1200;
     static int LIFT_3 = 1578; // 550;
     static int LIFT_2 = 947;  // 330;
@@ -112,7 +114,7 @@ public class RobotReference
 
 
 
-    int LEVEL_5 = 5100; // 1850;
+    int LEVEL_5 = 5300; // 1850;
     int LEVEL_4 = 3444; // 1200;
     int LEVEL_3 = 1578; // 550;
     int LEVEL_2 = 947;  // 330;
