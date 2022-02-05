@@ -279,12 +279,12 @@ public class BasicOpMode_Auto extends LinearOpMode {
         waitForDriveMotors();
         moveForward(4.5, rb.SLOW);
         waitForDriveMotors();
-        moveRight(5, 0.1);
+        moveRight(8, 0.1);
         waitForDriveMotors();
         spinnerRed(rb.SPINNER_SPEED);
         sleep(rb.SPIN_DURATION);
         spinnerEnd();
-        moveBackward(21, rb.SLOW);
+        moveBackward(17, rb.SLOW);
         waitForDriveMotors();
     }
 
@@ -311,24 +311,24 @@ public class BasicOpMode_Auto extends LinearOpMode {
         }
         //parking in the warehouse
         if(hubNum == 1){
-            moveLeft(17, rb.MEDIUM);
+            moveForward(4,rb.MEDIUM);
             waitForDriveMotors();
             rotateRight( -80, rb.MEDIUM);
             waitForDriveMotors();
-            moveRight(32, rb.SLOW);
+            moveRight(28, rb.SLOW);
             waitForDriveMotorsFast();
-            moveForward(44, rb.MEDIUM);
+            moveForward(61, rb.MEDIUM);
             waitForDriveMotors();
             moveLeft(26, rb.MEDIUM);
             waitForDriveMotors();
         }else{
-            moveRight(17, rb.MEDIUM);
+            moveBackward(4,rb.MEDIUM);
             waitForDriveMotors();
             rotateRight( -80, rb.MEDIUM);
             waitForDriveMotors();
-            moveLeft(32, rb.SLOW);
+            moveLeft(28, rb.SLOW);
             waitForDriveMotorsFast();
-            moveBackward(45, rb.MEDIUM);
+            moveBackward(62, rb.MEDIUM);
             waitForDriveMotors();
             moveRight(26, rb.MEDIUM);
             waitForDriveMotors();
@@ -350,8 +350,51 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void blueDuckWithFreight() { // unfinished
-        moveRight(-4.75, rb.SLOW);
+        moveRight(24, rb.SLOW);
         waitForDriveMotors();
+        moveBackward(7,rb.MEDIUM);
+        waitForDriveMotors();
+        if(hubNum != 1) {
+            rotateRight(-180, rb.MEDIUM);
+            waitForDriveMotors();
+        }
+        switch(hubNum){//these are switched to accommodate for blue
+            case 1:
+                level1(10);
+                break;
+            case 2:
+                level2(9);
+                break;
+            case 3:
+                level3(16);
+                break;
+    }
+        //parking in the warehouse
+        if(hubNum == 1){
+            moveRight(17, rb.MEDIUM);
+            waitForDriveMotors();
+            rotateRight( 80, rb.MEDIUM);
+            waitForDriveMotors();
+            moveLeft(32, rb.SLOW);
+            waitForDriveMotors();
+            moveForward(44, rb.MEDIUM);
+            waitForDriveMotors();
+            moveRight(26, rb.MEDIUM);
+            waitForDriveMotors();
+        }else{
+            moveLeft(17, rb.MEDIUM);
+            waitForDriveMotors();
+            rotateRight( 80, rb.MEDIUM);
+            waitForDriveMotors();
+            moveRight(32, rb.SLOW);
+            waitForDriveMotorsFast();
+            moveBackward(45, rb.MEDIUM);
+            waitForDriveMotors();
+            moveLeft(26, rb.MEDIUM);
+            waitForDriveMotors();
+        }
+
+        /*
         moveForward(5, rb.SLOW);
         waitForDriveMotors();
         spinnerBlue(rb.SPINNER_SPEED);
@@ -377,6 +420,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
         sleep(3000);
         moveRight(60, rb.SLOW);
         waitForDriveMotors();
+         */
     }
 
     public void blueDuckWithNoFreight() {
@@ -405,12 +449,12 @@ public class BasicOpMode_Auto extends LinearOpMode {
         moveBackward(7,rb.MEDIUM);
         waitForDriveMotors();
         if(hubNum != 3) {
-            rotateRight(-180, rb.MEDIUM);
+            rotateRight(-150, rb.MEDIUM);
             waitForDriveMotors();
         }
         switch(hubNum){//these are switched to accommodate for blue
             case 1:
-                level2(8.5);
+                level2(9);
                 break;
             case 2:
                 level3(16);
@@ -426,7 +470,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
             rotateRight( 80, rb.MEDIUM);
             waitForDriveMotors();
             moveLeft(32, rb.SLOW);
-            waitForDriveMotorsFast();
+            waitForDriveMotors();
             moveForward(44, rb.MEDIUM);
             waitForDriveMotors();
             moveRight(26, rb.MEDIUM);

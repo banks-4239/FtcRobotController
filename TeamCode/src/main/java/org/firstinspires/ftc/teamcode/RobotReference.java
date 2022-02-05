@@ -133,7 +133,7 @@ public class RobotReference
     double MEDIUM = 0.6;
     double SLOW = 0.3;
 
-    long SPIN_DURATION = 7500;
+    long SPIN_DURATION = 8000;
 
     boolean redOrBlue = true;
 
