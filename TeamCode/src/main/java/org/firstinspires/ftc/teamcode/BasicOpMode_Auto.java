@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -203,73 +202,42 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void redDuckWithFreight() {
-
-
-
         moveRight(13, rb.MEDIUM);
-        waitForDriveMotorsFast();
-        moveForward(-4.5, rb.MEDIUM);
-        waitForDriveMotorsFast();
-        moveRight(4.5, 0.1);
-        waitForDriveMotorsFast();
-        spinnerRed(rb.SPINNER_SPEED);
-        sleep(rb.SPIN_DURATION - 500);
-        spinnerEnd();
-        moveForward(-8, rb.MEDIUM);
-        waitForDriveMotorsFast();
-        moveRight(8, 0.1);
-        waitForDriveMotorsFast();
-        moveForward(-16, rb.MEDIUM);
-        waitForDriveMotorsFast();
-        moveRight(-8, 0.1);
-        waitForDriveMotorsFast();
-        rotateRight(-90, rb.MEDIUM);
         waitForDriveMotors();
-
+        moveForward(-5, rb.MEDIUM);
+        waitForDriveMotors();
+        moveRight(5, rb.SLOW);
+        waitForDriveMotors();
+        spinnerRed(rb.SPINNER_SPEED);
+        sleep(rb.SPIN_DURATION);
+        spinnerEnd();
+        moveForward(-7, rb.MEDIUM);
+        waitForDriveMotorsFast();
+        rotateRight(90, rb.SLOW);
+        waitForDriveMotors();
+        moveForward(7, rb.MEDIUM);
+        waitForDriveMotorsFast();
+        moveRight(28, rb.MEDIUM);
+        waitForDriveMotors();
+        moveBackward(7,rb.MEDIUM);
+        if(hubNum != 1) {
+            waitForDriveMotors();
+            rotateRight(180, rb.SLOW);
+            waitForDriveMotors();
+        }else{
+            waitForDriveMotorsFast();
+        }
         switch(hubNum){//30 towards hub
             case 1:
-                level1(30);
+                level1(21);
                 break;
             case 2:
-                level2(30);
+                level2(22);
                 break;
             case 3:
-                level3(30);
+                level3(16);
                 break;
         }
-
-
-
-
-        /*
-        moveRight(-8, SLOW);
-        waitForDriveMotors();
-        moveForward(7, SLOW);
-        waitForDriveMotors();
-        moveForward(-35, SLOW);//
-        waitForDriveMotors();
-        rotateRight(-90, SLOW);
-        waitForDriveMotors();
-        switch(hubNum){
-            case 1:
-                level1();
-                break;
-            case 2:
-                level2();
-                break;
-            case 3:
-                level3();
-                break;
-        }
-        moveForward(-25, SLOW);
-        waitForDriveMotors();
-        rotateRight(90, SLOW);
-        waitForDriveMotors();
-        moveForward(20, SLOW);
-        waitForDriveMotors();
-        moveRight(5, SLOW);
-
-         */
     }
 
     public void redDuckWithNoFreight() {
@@ -449,7 +417,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
         moveBackward(7,rb.MEDIUM);
         waitForDriveMotors();
         if(hubNum != 3) {
-            rotateRight(-150, rb.MEDIUM);
+            rotateRight(-180, rb.MEDIUM);
             waitForDriveMotors();
         }
         switch(hubNum){//these are switched to accommodate for blue
@@ -505,7 +473,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
 
     public void level1(double inches){
-        moveBackward(inches, rb.MEDIUM);
+        moveBackward(inches, rb.FAST);
         waitForDriveMotors();
         //scoring
         liftArm(rb.LIFT_2,rb.LIFT_ARM_ROTATE_PWR);
@@ -517,10 +485,10 @@ public class BasicOpMode_Auto extends LinearOpMode {
         waitForArm();
     }
 
-    
+
 
     public void level2(double inches){
-        moveForward(inches, rb.MEDIUM);
+        moveForward(inches, rb.FAST);
         waitForDriveMotors();
         //scoring
         liftArm(rb.LIFT_6,rb.LIFT_ARM_ROTATE_PWR);
@@ -533,7 +501,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void level3(double inches){
-        moveForward(inches, rb.MEDIUM);
+        moveForward(inches, rb.FAST);
         waitForDriveMotors();
         //scoring
         liftArm(rb.LIFT_5,rb.LIFT_ARM_ROTATE_PWR);
@@ -709,15 +677,18 @@ public class BasicOpMode_Auto extends LinearOpMode {
     }
 
     public void spinnerBlue(double speed) {
-        rb.spinner.setPower(-speed);
+        rb.spinnerR.setPower(-speed);
+        rb.spinnerL.setPower(-speed);
     }
 
     public void spinnerRed(double speed) {
-        rb.spinner.setPower(speed);
+        rb.spinnerR.setPower(speed);
+        rb.spinnerL.setPower(speed);
     }
 
     public void spinnerEnd() {
-        rb.spinner.setPower(0);
+        rb.spinnerR.setPower(0);
+        rb.spinnerL.setPower(0);
     }
 
     private void initVuforia() {
@@ -756,7 +727,7 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 // telemetry.addData("# Object Detected", updatedRecognitions.size());
                 // step through the list of recognitions and display boundary info.
                 int i = 0;
-                for (int p = 0; p != updatedRecognitions.size(); p++) {
+                for (i = 0; i != updatedRecognitions.size(); i++) {
                         /*telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                         telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
                                 recognition.getLeft(), recognition.getTop());
@@ -764,19 +735,26 @@ public class BasicOpMode_Auto extends LinearOpMode {
                                 recognition.getRight(), recognition.getBottom());*/
 
                     if(updatedRecognitions.get(i).getLabel() != "Marker") {
-                        telemetry.addData("", updatedRecognitions.get(i).getLeft());
+                        telemetry.addData("", updatedRecognitions.get(0).getLeft());
+                        if(updatedRecognitions.get(0).getLeft() < 180){
+                            return 1;
+                        }else{
+                            return 2;
+                        }
                     }
-                    if(updatedRecognitions.get(i).getLeft() < 180){
-                        return 1;
-                    }else{
-                        return 2;
-                    }
+
+
+
+
 
 
                 }
                 if(updatedRecognitions.size() == 0){
                     return 3;
                 }
+
+
+
 
 
             }

@@ -33,7 +33,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -108,7 +107,8 @@ public class RobotReference
     DcMotor rightBackDrive = null;
     DcMotor robotArm = null;
     DcMotor intake = null;
-    DcMotor spinner = null;
+    DcMotor spinnerR = null;
+    DcMotor spinnerL = null;
 
 
 
@@ -133,7 +133,9 @@ public class RobotReference
     double MEDIUM = 0.6;
     double SLOW = 0.3;
 
-    long SPIN_DURATION = 8000;
+    long SPIN_DURATION = 6750;
+
+    
 
     boolean redOrBlue = true;
 
@@ -184,13 +186,15 @@ public class RobotReference
         rightBackDrive = hardwareMap.get(DcMotor.class, "br");
         robotArm = hardwareMap.get(DcMotor.class, "ra");
         intake = hardwareMap.get(DcMotor.class, "in");
-        spinner = hardwareMap.get(DcMotor.class, "sc");
+        spinnerR = hardwareMap.get(DcMotor.class, "sr");
+        spinnerL = hardwareMap.get(DcMotor.class, "sl");
 
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        spinner.setDirection(DcMotor.Direction.REVERSE);
+        spinnerR.setDirection(DcMotor.Direction.REVERSE);
+        spinnerL.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         robotArm.setDirection(DcMotor.Direction.REVERSE);
 

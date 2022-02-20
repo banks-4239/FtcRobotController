@@ -31,21 +31,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.widget.Button;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.util.Range;
-
-import java.util.Collection;
-import java.util.Collections;
 
 
 /**
@@ -75,27 +64,30 @@ public class BasicOpMode_Linear extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        rb.init(hardwareMap);
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
+
         rb.leftFrontDrive = hardwareMap.get(DcMotor.class, "fl");
         rb.rightFrontDrive = hardwareMap.get(DcMotor.class, "fr");
         rb.leftBackDrive = hardwareMap.get(DcMotor.class, "bl");
         rb.rightBackDrive = hardwareMap.get(DcMotor.class, "br");
         rb.robotArm = hardwareMap.get(DcMotor.class, "ra");
         rb.intake = hardwareMap.get(DcMotor.class, "in");
-        rb.spinner = hardwareMap.get(DcMotor.class, "sc");
-        rb.armButton = hardwareMap.get(DigitalChannel.class, "ad");
+        rb.spinnerR = hardwareMap.get(DcMotor.class, "sr");
+        rb.spinnerL = hardwareMap.get(DcMotor.class, "sl");
 
         rb.rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rb.leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rb.rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rb.leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rb.spinner.setDirection(DcMotor.Direction.FORWARD);
+        rb.spinnerR.setDirection(DcMotor.Direction.FORWARD);
+        rb.spinnerL.setDirection(DcMotor.Direction.FORWARD);
         rb.intake.setDirection(DcMotor.Direction.FORWARD);
         rb.robotArm.setDirection(DcMotor.Direction.REVERSE);
 
-        rb.armButton.setMode(DigitalChannel.Mode.INPUT);
+        //rb.armButton.setMode(DigitalChannel.Mode.INPUT);
 
         boolean facingFront = true;
         int toggled = 0;
@@ -150,7 +142,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double armUp = rb.activeGamepad1.right_trigger;
             double armDown = rb.activeGamepad1.left_trigger;
 
-            boolean armIsDown = rb.armButton.getState();
+            //boolean armIsDown = rb.armButton.getState();
 
             boolean armMoving;
 
@@ -282,12 +274,15 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 telemetry.addData("armPosition", rb.robotArm.getCurrentPosition());
 
                 if (spinLeft) {
-                    rb.spinner.setPower(0.5);
+                    rb.spinnerR.setPower(0.5);
+                    rb.spinnerL.setPower(0.5);
                 } else {
                     if (spinRight) {
-                        rb.spinner.setPower(-0.5);
+                        rb.spinnerR.setPower(-0.5);
+                        rb.spinnerL.setPower(-0.5);
                     } else {
-                        rb.spinner.setPower(0);
+                        rb.spinnerR.setPower(0);
+                        rb.spinnerL.setPower(0);
                     }
                 }
                 /* on comment indefinetly
