@@ -85,6 +85,8 @@ public class RobotReference
 
     static final double LIFT_ARM_ROTATE_PWR = 1;
 
+    static int errorValue = 50;
+    static int errorValueSlow = 10;
 
 
 
