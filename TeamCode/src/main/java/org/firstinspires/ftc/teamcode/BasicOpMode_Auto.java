@@ -211,15 +211,13 @@ public class BasicOpMode_Auto extends LinearOpMode {
         spinnerRed(rb.SPINNER_SPEED);
         sleep(rb.SPIN_DURATION);
         spinnerEnd();
-        moveForward(-9, rb.MEDIUM);
+        moveForward(-7, rb.MEDIUM);
         waitForDriveMotorsFast();
         rotateRight(90, rb.SLOW);
         waitForDriveMotors(rb.errorValue);
         moveForward(7, rb.MEDIUM);
         waitForDriveMotorsFast();
         moveRight(28, rb.MEDIUM);
-        waitForDriveMotors(rb.errorValue);
-        moveForward(2,rb.MEDIUM);
         waitForDriveMotors(rb.errorValue);
         moveBackward(7,rb.MEDIUM);
         if(hubNum != 1) {
@@ -234,32 +232,11 @@ public class BasicOpMode_Auto extends LinearOpMode {
                 level1(21);
                 break;
             case 2:
-                level2(20);
+                level2(22);
                 break;
             case 3:
                 level3(16);
                 break;
-        }
-        if(hubNum == 1){
-            moveForward(4,rb.MEDIUM);
-            waitForDriveMotors(rb.errorValue);
-            rotateRight( -80, rb.MEDIUM);
-            waitForDriveMotors(rb.errorValue);
-            moveRight(28, rb.SLOW);
-            waitForDriveMotorsFast();
-            moveForward(61, rb.MEDIUM);
-            waitForDriveMotors(rb.errorValue);
-            moveLeft(26, rb.MEDIUM);
-            waitForDriveMotors(rb.errorValue);
-        }else{
-            moveForward(4,rb.MEDIUM);
-            waitForDriveMotors(rb.errorValue);
-            rotateRight( 180, rb.MEDIUM);
-            waitForDriveMotors(rb.errorValue);
-            moveForward(30,rb.MEDIUM);
-            waitForDriveMotors(rb.errorValue);
-            moveLeft(15, rb.MEDIUM);
-            waitForDriveMotorsFast();
         }
     }
 
@@ -511,8 +488,8 @@ public class BasicOpMode_Auto extends LinearOpMode {
 
 
     public void level2(double inches){
-        moveForward(inches, rb.MEDIUM);
-        waitForDriveMotorsBeta();
+        moveForward(inches, rb.FAST);
+        waitForDriveMotors(rb.errorValueSlow);
         //scoring
         liftArm(rb.LIFT_6,rb.LIFT_ARM_ROTATE_PWR);
         waitForArm();
@@ -684,16 +661,16 @@ public class BasicOpMode_Auto extends LinearOpMode {
         rb.rightBackDrive.setPower(0);
     }
     //oldversion
-    public void waitForDriveMotorsBeta() {
-        while (rb.leftFrontDrive.isBusy() || rb.rightFrontDrive.isBusy() || rb.leftBackDrive.isBusy() || rb.rightBackDrive.isBusy()) {
-            telemetry.update();
-        }
-
-        rb.leftFrontDrive.setPower(0);
-        rb.rightFrontDrive.setPower(0);
-        rb.leftBackDrive.setPower(0);
-        rb.rightBackDrive.setPower(0);
-    }
+//    public void waitForDriveMotors() {
+//        while (rb.leftFrontDrive.isBusy() || rb.rightFrontDrive.isBusy() || rb.leftBackDrive.isBusy() || rb.rightBackDrive.isBusy()) {
+//            telemetry.update();
+//        }
+//
+//        rb.leftFrontDrive.setPower(0);
+//        rb.rightFrontDrive.setPower(0);
+//        rb.leftBackDrive.setPower(0);
+//        rb.rightBackDrive.setPower(0);
+//    }
 
     public void waitForDriveMotorsFast() {
         while (rb.leftFrontDrive.isBusy() && rb.rightFrontDrive.isBusy() && rb.leftBackDrive.isBusy() && rb.rightBackDrive.isBusy()) {
