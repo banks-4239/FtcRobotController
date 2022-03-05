@@ -116,8 +116,25 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             // Setup a variable for each drive wheel to save power level for telemetry
-            double moveX = rb.activeGamepad1.left_stick_x;
-            double moveY = rb.activeGamepad1.left_stick_y;
+            double moveX = 0;
+            double moveY = 0;
+
+            if(gamepad1.dpad_up){
+                moveY = -1;
+            }else if(gamepad1.dpad_down){
+                moveY = 1;
+            }else{
+                moveY = rb.activeGamepad1.left_stick_y;
+            }
+
+            if(gamepad1.dpad_right){
+                moveX = 1;
+            }else if(gamepad1.dpad_left){
+                moveX = -1;
+            }else{
+                moveX = rb.activeGamepad1.left_stick_x;
+            }
+
 
             boolean spinLeft = gamepad2.left_bumper;
             boolean spinRight = gamepad2.right_bumper;
@@ -153,27 +170,27 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
                 if (facingFront) {
                     if (fast) {
-                        rb.leftFrontDrive.setPower(moveY + rotate + moveX);
-                        rb.rightFrontDrive.setPower(moveY - rotate - moveX);
-                        rb.rightBackDrive.setPower(moveY - rotate + moveX);
-                        rb.leftBackDrive.setPower(moveY + rotate - moveX);
+                        rb.leftFrontDrive.setPower(moveY + rotate - moveX);
+                        rb.rightFrontDrive.setPower(moveY - rotate + moveX);
+                        rb.rightBackDrive.setPower(moveY - rotate - moveX);
+                        rb.leftBackDrive.setPower(moveY + rotate + moveX);
                     } else {
-                        rb.leftFrontDrive.setPower(((moveY / 2) + (rotate / 1.5) + (moveX / 2)));
-                        rb.rightFrontDrive.setPower(((moveY / 2) - (rotate / 1.5) - (moveX / 2)));
-                        rb.rightBackDrive.setPower(((moveY / 2) - (rotate / 1.5) + (moveX / 2)));
-                        rb.leftBackDrive.setPower(((moveY / 2) + (rotate / 1.5) - (moveX / 2)));
+                        rb.leftFrontDrive.setPower(((moveY / 2) + (rotate / 1.5) - (moveX / 2)));
+                        rb.rightFrontDrive.setPower(((moveY / 2) - (rotate / 1.5) + (moveX / 2)));
+                        rb.rightBackDrive.setPower(((moveY / 2) - (rotate / 1.5) - (moveX / 2)));
+                        rb.leftBackDrive.setPower(((moveY / 2) + (rotate / 1.5) + (moveX / 2)));
                     }
                 } else {
                     if (fast) {
-                        rb.leftFrontDrive.setPower(-moveY + rotate - moveX);
-                        rb.rightFrontDrive.setPower(-moveY - rotate + moveX);
-                        rb.rightBackDrive.setPower(-moveY - rotate - moveX);
-                        rb.leftBackDrive.setPower(-moveY + rotate + moveX);
+                        rb.leftFrontDrive.setPower(-moveY + rotate + moveX);
+                        rb.rightFrontDrive.setPower(-moveY - rotate - moveX);
+                        rb.rightBackDrive.setPower(-moveY - rotate + moveX);
+                        rb.leftBackDrive.setPower(-moveY + rotate - moveX);
                     } else {
-                        rb.leftFrontDrive.setPower((-(moveY / 2) + (rotate / 1.5) - (moveX / 2)));
-                        rb.rightFrontDrive.setPower((-(moveY / 2) - (rotate / 1.5) + (moveX / 2)));
-                        rb.rightBackDrive.setPower((-(moveY / 2) - (rotate / 1.5) - (moveX / 2)));
-                        rb.leftBackDrive.setPower((-(moveY / 2) + (rotate / 1.5    ) + (moveX / 2)));
+                        rb.leftFrontDrive.setPower((-(moveY / 2) + (rotate / 1.5) + (moveX / 2)));
+                        rb.rightFrontDrive.setPower((-(moveY / 2) - (rotate / 1.5) - (moveX / 2)));
+                        rb.rightBackDrive.setPower((-(moveY / 2) - (rotate / 1.5) + (moveX / 2)));
+                        rb.leftBackDrive.setPower((-(moveY / 2) + (rotate / 1.5    ) - (moveX / 2)));
                     }
                 }
 
